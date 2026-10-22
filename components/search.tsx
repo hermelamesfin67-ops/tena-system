@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import MedicineCard from "./medicine-card";
 import { Search } from "lucide-react";
@@ -7,23 +6,19 @@ import { Button } from "./ui/button";
 import { useFetchData } from "@/api/use-fetch-data";
 import { queryKeys } from "@/api/query-keys";
 import Loader from "./loader";
+import { FiSearch } from "react-icons/fi";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
     isLoading: boolean
     medicines: Medicine[];
 };
 
-// const languages = [
-//     {
-//         code: "en",
-//         native_name: "English"
-//     }
-// ]
-
 export default function MedicineSearch({
     isLoading,
     medicines,
 }: Props) {
+    const queryClient = useQueryClient()
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("all");
 
@@ -35,7 +30,7 @@ export default function MedicineSearch({
 
     return (
         <section>
-            <div className="relative">
+            <div className="flex items-center gap-3 relative">
                 <span
                     className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                     aria-hidden="true"
@@ -51,6 +46,22 @@ export default function MedicineSearch({
                     aria-label="Search medicines"
                     className="w-full rounded-2xl border border-slate-200 bg-white py-4 pl-10 pr-4 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-emerald-50"
                 />
+                <Button
+                    id="search"
+                    size={"lg"}
+                    disabled={isLoading}
+                    onClick={() => {
+                        queryClient.invalidateQueries({
+                            queryKey: [queryKeys.getAllMedicine],
+                        })
+                        queryClient.invalidateQueries({
+                            queryKey: [queryKeys.getAllCategories],
+                        })
+                    }}
+                    className="gradient-btn"
+                >
+                    <FiSearch />
+                </Button>
             </div>
 
             <div
@@ -66,7 +77,7 @@ export default function MedicineSearch({
                         : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                         }`}
                 >
-                    All medicines
+                    All Medicines
                 </button>
 
                 {categories?.map((item) => (
@@ -74,12 +85,12 @@ export default function MedicineSearch({
                         key={item.slug}
                         onClick={() => setCategory(item.slug)}
                         aria-pressed={category === item.slug}
-                        className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium ${category === item.slug
+                        className={`capitalize shrink-0 rounded-full px-4 py-2 text-sm font-medium ${category === item.slug
                             ? "bg-primary text-white"
                             : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                             }`}
                     >
-                        {item.name}
+                        {item?.slug}
                     </button>
                 ))}
             </div>

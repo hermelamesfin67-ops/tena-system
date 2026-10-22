@@ -1,88 +1,88 @@
+"use client"
+import { queryKeys } from "@/api/query-keys";
+import { useFetchData } from "@/api/use-fetch-data";
+import { IoIosArrowBack } from "react-icons/io";
+import Link from "next/link";
+import Loader from "@/components/loader";
+import { useState } from "react";
+import { sections } from "@/constants";
 
 type Props = {
-    medicine: Medicine;
-    translation: MedicineTranslation;
+    id: string
 };
 
-const sections = [
-    {
-        title: "What it treats",
-        field: "what_it_treats",
-        icon: "✚",
-    },
-    {
-        title: "When to use it",
-        field: "when_to_use",
-        icon: "◷",
-    },
-    {
-        title: "How to use it",
-        field: "how_to_use",
-        icon: "↗",
-    },
-    {
-        title: "Possible side effects",
-        field: "side_effects",
-        icon: "!",
-    },
-    {
-        title: "Warnings and precautions",
-        field: "warnings",
-        icon: "⚠",
-    },
-    {
-        title: "Storage instructions",
-        field: "storage_instructions",
-        icon: "⌂",
-    },
-] as const;
+export default function MedicineDetails({ id }: Props) {
+    const [language, setLanguage] = useState("en");
+    const medicineData = useFetchData(
+        [queryKeys.getAllMedicine, id],
+        `drugs/${id}`,
+    )
+    const medicine: Medicine = medicineData.data
 
-export default function MedicineDetails({
-    medicine,
-    translation,
-}: Props) {
+    const languagesData = useFetchData(
+        [queryKeys.getAllLanguages],
+        `languages/`,
+    )
+    const languages: Language[] = languagesData.data
+
+    if (medicineData.isFetching) return <Loader />
+
     return (
         <main className="min-h-screen bg-slate-50">
             <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-                <a
-                    href="/medicines"
-                    className="text-sm font-medium text-primary hover:underline"
+                <Link
+                    href="/"
+                    className="text-sm flex items-center gap-1.5 font-medium text-primary hover:text-primary/80"
                 >
-                    ← Back to medicines
-                </a>
+                    <IoIosArrowBack size={20} /> Back to medicines
+                </Link>
 
                 <header className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 sm:p-10">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-2xl text-primary">
                         ✚
                     </div>
 
-                    <p className="mt-6 text-sm font-medium text-primary">
-                        MEDICINE INFORMATION
-                    </p>
+                    <div className="flex flex-col gap-3 md:flex-row w-full md:items-center">
+                        <p className="mt-6 text-sm font-medium text-primary">
+                            MEDICINE INFORMATION
+                        </p>
 
-                    <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                        {translation.display_name}
-                    </h1>
+                        <div className="flex items-center justify-end gap-2 flex-wrap w-full flex-1">
+                            {languages?.map((item) => (
+                                <button
+                                    key={item.code}
+                                    onClick={() => setLanguage(item.code)}
+                                    aria-pressed={language === item.code}
+                                    className={`capitalize shrink-0 rounded-full px-4 py-2 text-sm font-medium ${language === item.code
+                                        ? "bg-primary text-white"
+                                        : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                                        }`}
+                                >
+                                    {item?.native_name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
 
-                    {translation.short_description && (
+                    {/* {translation.short_description && (
                         <p className="mt-4 max-w-3xl leading-7 text-slate-600">
                             {translation.short_description}
                         </p>
-                    )}
+                    )} */}
 
                     <div className="mt-6 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-3">
                         <div>
                             <p className="text-sm text-slate-500">Generic name</p>
                             <p className="mt-1 font-semibold text-slate-900">
-                                {medicine.generic_name}
+                                {medicine?.generic_name}
                             </p>
                         </div>
 
-                        {medicine.brand_name && (
+                        {medicine?.brand_name && (
                             <div>
                                 <p className="text-sm text-slate-500">Brand name</p>
                                 <p className="mt-1 font-semibold text-slate-900">
-                                    {medicine.brand_name}
+                                    {medicine?.brand_name}
                                 </p>
                             </div>
                         )}
@@ -90,7 +90,7 @@ export default function MedicineDetails({
                         <div>
                             <p className="text-sm text-slate-500">Strength and form</p>
                             <p className="mt-1 font-semibold text-slate-900">
-                                {[medicine.strength, medicine.dosage_form]
+                                {[medicine?.strength, medicine?.dosage_form]
                                     .filter(Boolean)
                                     .join(" · ") || "Not specified"}
                             </p>
@@ -98,7 +98,7 @@ export default function MedicineDetails({
                     </div>
 
                     <div className="mt-6 flex flex-wrap gap-2">
-                        {medicine.categories.map((category) => (
+                        {medicine?.categories.map((category) => (
                             <span
                                 key={category.slug}
                                 className="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-700"
@@ -109,7 +109,7 @@ export default function MedicineDetails({
                     </div>
                 </header>
 
-                {translation.warnings && (
+                {/* {translation.warnings && (
                     <aside className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
                         <h2 className="font-semibold text-amber-950">
                             Important safety information
@@ -118,13 +118,13 @@ export default function MedicineDetails({
                             {translation.warnings}
                         </p>
                     </aside>
-                )}
+                )} */}
 
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
-                    {sections.map((section) => {
-                        const content = translation[section.field];
+                    {sections?.map((section) => {
+                        // const content = translation[section.field];
 
-                        if (!content) return null;
+                        // if (!content) return null;
 
                         const isWarning = section.field === "warnings";
 
@@ -146,9 +146,9 @@ export default function MedicineDetails({
                                     </h2>
                                 </div>
 
-                                <p className="mt-4 whitespace-pre-line text-sm leading-7 text-slate-600">
+                                {/* <p className="mt-4 whitespace-pre-line text-sm leading-7 text-slate-600">
                                     {content}
-                                </p>
+                                </p> */}
                             </section>
                         );
                     })}

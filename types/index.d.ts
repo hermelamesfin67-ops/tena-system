@@ -1,8 +1,9 @@
 type Language = {
-  id: number;
+  id: string;
   code: string;
   name: string;
   native_name: string;
+  is_active: boolean;
 };
 
 type Category = {

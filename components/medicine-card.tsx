@@ -8,7 +8,7 @@ export default function MedicineCard({ medicine }: Props) {
 
     return (
         <Link
-            href={"#"}
+            href={`/medicine/${medicine?.id}`}
             className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-primary hover:shadow-lg"
         >
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-primary">
@@ -26,7 +26,7 @@ export default function MedicineCard({ medicine }: Props) {
             </div>
 
             <div className="flex flex-wrap gap-2">
-                {medicine.categories.slice(0, 2).map((category) => (
+                {medicine?.categories.slice(0, 2).map((category) => (
                     <span
                         key={category.slug}
                         className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600"
@@ -41,11 +41,11 @@ export default function MedicineCard({ medicine }: Props) {
             </h2>
 
             <p className="mt-1 text-sm text-slate-500">
-                {medicine.generic_name}
+                {medicine?.generic_name}
             </p>
 
             <p className="mt-3 text-sm text-slate-600">
-                {[medicine.strength, medicine.dosage_form]
+                {[medicine?.strength, medicine?.dosage_form]
                     .filter(Boolean)
                     .join(" · ")}
             </p>
