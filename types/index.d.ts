@@ -7,13 +7,21 @@ type Language = {
 };
 
 type Category = {
+  id: string;
   slug: string;
-  name: string;
-  description?: string;
+  translations: {
+    id: string;
+    language: string;
+    language_code: string;
+    category: string;
+    name: string;
+    description: string;
+  }[];
 };
 
 type MedicineTranslation = {
   language: Language;
+  language_code: string;
   display_name: string;
   short_description: string;
   what_it_treats: string;
@@ -31,6 +39,6 @@ type Medicine = {
   brand_name: string;
   strength: string;
   dosage_form: string;
-  categories: Category[];
+  categories: string[];
   translations: MedicineTranslation[];
 };

@@ -4,7 +4,7 @@ import { useFetchData } from "@/api/use-fetch-data";
 import { IoIosArrowBack } from "react-icons/io";
 import Link from "next/link";
 import Loader from "@/components/loader";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { sections } from "@/constants";
 
 type Props = {
@@ -18,6 +18,26 @@ export default function MedicineDetails({ id }: Props) {
         `drugs/${id}`,
     )
     const medicine: Medicine = medicineData.data
+
+    const medicineTranslation = useMemo(() => {
+        return medicine?.translations?.filter((tr) => tr?.language_code === language)[0]
+    }, [language, medicine])
+
+    const categoryData = useFetchData(
+        [queryKeys.getAllCategories],
+        `categories/`,
+    )
+    const categories: Category[] = categoryData.data?.results
+
+    const categoryNames = categories
+        ?.filter((category) => medicine?.categories?.includes(category?.id))
+        ?.map((category) => {
+            return (
+                category.translations.find(
+                    (translation) => translation.language_code === language
+                )
+            );
+        });
 
     const languagesData = useFetchData(
         [queryKeys.getAllLanguages],
@@ -72,6 +92,12 @@ export default function MedicineDetails({ id }: Props) {
 
                     <div className="mt-6 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-3">
                         <div>
+                            <p className="text-sm text-slate-500">Name</p>
+                            <p className="mt-1 font-semibold text-slate-900">
+                                {medicineTranslation?.display_name}
+                            </p>
+                        </div>
+                        <div>
                             <p className="text-sm text-slate-500">Generic name</p>
                             <p className="mt-1 font-semibold text-slate-900">
                                 {medicine?.generic_name}
@@ -98,12 +124,12 @@ export default function MedicineDetails({ id }: Props) {
                     </div>
 
                     <div className="mt-6 flex flex-wrap gap-2">
-                        {medicine?.categories.map((category) => (
+                        {categoryNames.map((category) => (
                             <span
-                                key={category.slug}
+                                key={category?.category}
                                 className="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-700"
                             >
-                                {category.name}
+                                {category?.name}
                             </span>
                         ))}
                     </div>
@@ -122,7 +148,7 @@ export default function MedicineDetails({ id }: Props) {
 
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
                     {sections?.map((section) => {
-                        // const content = translation[section.field];
+                        const content = medicineTranslation[section.field];
 
                         // if (!content) return null;
 
@@ -146,9 +172,9 @@ export default function MedicineDetails({ id }: Props) {
                                     </h2>
                                 </div>
 
-                                {/* <p className="mt-4 whitespace-pre-line text-sm leading-7 text-slate-600">
+                                <p className="mt-4 whitespace-pre-line text-sm leading-7 text-slate-600">
                                     {content}
-                                </p> */}
+                                </p>
                             </section>
                         );
                     })}

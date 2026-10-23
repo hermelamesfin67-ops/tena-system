@@ -2,9 +2,20 @@ import Link from "next/link";
 
 type Props = {
     medicine: Medicine;
+    categories: Category[];
 };
 
-export default function MedicineCard({ medicine }: Props) {
+export default function MedicineCard({ medicine, categories }: Props) {
+
+    const categoryNames = categories
+        ?.filter((category) => medicine?.categories?.includes(category?.id))
+        ?.map((category) => {
+            return (
+                category.translations.find(
+                    (translation) => translation.language_code === "en"
+                )
+            );
+        });
 
     return (
         <Link
@@ -26,21 +37,21 @@ export default function MedicineCard({ medicine }: Props) {
             </div>
 
             <div className="flex flex-wrap gap-2">
-                {medicine?.categories.slice(0, 2).map((category) => (
+                {categoryNames?.map((category) => (
                     <span
-                        key={category.slug}
+                        key={category?.category}
                         className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600"
                     >
-                        {category.name}
+                        {category?.name}
                     </span>
                 ))}
             </div>
 
-            <h2 className="mt-3 text-lg font-semibold text-slate-900 group-hover:text-primary">
+            <h2 className="mt-3 text-xl font-semibold text-slate-900 group-hover:text-primary">
                 {medicine?.brand_name}
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-slate-500">
                 {medicine?.generic_name}
             </p>
 

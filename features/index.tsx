@@ -1,17 +1,8 @@
 "use client"
-import { useFetchData } from "@/api/use-fetch-data"
 import MedicineSearch from "@/components/search";
 import Header from "@/components/header";
-import { queryKeys } from "@/api/query-keys";
 
 function HomePage() {
-
-    const medicineData = useFetchData(
-        [queryKeys.getAllMedicine],
-        `drugs/`,
-    )
-    const medicines: Medicine[] = medicineData.data
-
     return (
         <>
             <Header />
@@ -36,7 +27,7 @@ function HomePage() {
                 </section>
 
                 <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-                    <MedicineSearch medicines={medicines} isLoading={medicineData.isFetching}/>
+                    <MedicineSearch />
                 </section>
 
                 <footer className="border-t border-slate-200 bg-white">
