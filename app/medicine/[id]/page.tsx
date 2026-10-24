@@ -14,7 +14,7 @@ async function MedicineContent({ params }: Props) {
 
 export default function Page({ params }: Props) {
     return (
-        <Suspense fallback={<div>Loading medicine details...</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
             <MedicineContent params={params} />
         </Suspense>
     );

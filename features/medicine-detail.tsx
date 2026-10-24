@@ -45,6 +45,17 @@ export default function MedicineDetails({ id }: Props) {
     )
     const languages: Language[] = languagesData.data
 
+    const medicineLanguages = medicine?.translations?.map((translation) => {
+        const language = languages?.find(
+            (lang) => lang.code === translation?.language_code
+        );
+
+        return {
+            native_name: language?.native_name,
+            language_code: translation.language_code,
+        };
+    });
+
     if (medicineData.isFetching) return <Loader />
 
     return (
@@ -68,12 +79,12 @@ export default function MedicineDetails({ id }: Props) {
                         </p>
 
                         <div className="flex items-center justify-end gap-2 flex-wrap w-full flex-1">
-                            {languages?.map((item) => (
+                            {medicineLanguages?.map((item) => (
                                 <button
-                                    key={item.code}
-                                    onClick={() => setLanguage(item.code)}
-                                    aria-pressed={language === item.code}
-                                    className={`capitalize shrink-0 rounded-full px-4 py-2 text-sm font-medium ${language === item.code
+                                    key={item.language_code}
+                                    onClick={() => setLanguage(item.language_code)}
+                                    aria-pressed={language === item.language_code}
+                                    className={`capitalize shrink-0 rounded-full px-4 py-2 text-sm font-medium ${language === item.language_code
                                         ? "bg-primary text-white"
                                         : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                                         }`}
@@ -94,7 +105,7 @@ export default function MedicineDetails({ id }: Props) {
                         <div>
                             <p className="text-sm text-slate-500">Name</p>
                             <p className="mt-1 font-semibold text-slate-900">
-                                {medicineTranslation?.display_name}
+                                {medicineTranslation?.display_name || "--"}
                             </p>
                         </div>
                         <div>
@@ -124,7 +135,7 @@ export default function MedicineDetails({ id }: Props) {
                     </div>
 
                     <div className="mt-6 flex flex-wrap gap-2">
-                        {categoryNames.map((category) => (
+                        {categoryNames?.map((category) => (
                             <span
                                 key={category?.category}
                                 className="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-700"
@@ -148,9 +159,15 @@ export default function MedicineDetails({ id }: Props) {
 
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
                     {sections?.map((section) => {
-                        const content = medicineTranslation[section.field];
 
-                        // if (!content) return null;
+                        const content =
+                            medicineTranslation &&
+                                typeof medicineTranslation === "object" &&
+                                Object.keys(medicineTranslation).length > 0
+                                ? medicineTranslation[section.field]
+                                : undefined;
+
+                        if (!content) return null;
 
                         const isWarning = section.field === "warnings";
 

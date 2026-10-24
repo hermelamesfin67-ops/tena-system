@@ -36,7 +36,7 @@ export default function TablePagination({
   return (
     <div
       className={cn(
-        "table-pagination flex flex-col md:flex-row items-center justify-center sm:justify-between m-2 w-full",
+        "table-pagination flex flex-col sm:flex-row md:items-center justify-between m-2 w-full",
         paginatorClassName,
       )}
     >

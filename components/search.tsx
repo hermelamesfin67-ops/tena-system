@@ -15,7 +15,7 @@ export default function MedicineSearch() {
     const queryClient = useQueryClient()
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(6);
     const [debouncedValue, setDebouncedValue] = useState("");
     const [category, setCategory] = useState("all");
 
@@ -34,6 +34,7 @@ export default function MedicineSearch() {
 
     const [,] = useDebounce(
         () => {
+            setCurrentPage(1)
             setDebouncedValue?.(search.trim());
         },
         1000,
@@ -112,7 +113,7 @@ export default function MedicineSearch() {
                     Explore medicines
                 </h2>
                 <p className="text-sm text-slate-500">
-                    {medicines?.length || "--"} found
+                    {medicineData.data?.total_medicines || "--"} found
                 </p>
             </div>
 
@@ -127,11 +128,14 @@ export default function MedicineSearch() {
                                 categories={categories}
                             />
                         ))}
-
                     </div>
+
                     <TablePagination
                         pageSize={pageSize}
-                        setPageSize={setPageSize}
+                        setPageSize={(val) => {
+                            setCurrentPage(1)
+                            setPageSize(val)
+                        }}
                         total={medicineData.data?.total_medicines}
                         current={currentPage}
                         onChange={(page: number) => setCurrentPage(page)}
