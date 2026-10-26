@@ -68,9 +68,9 @@ export default function MedicineDetails({ id }: Props) {
             <div className="flex flex-col gap-5">
                 <Link
                     href="/"
-                    className="text-sm flex items-center gap-1.5 font-medium text-primary hover:text-primary/80"
+                    className="text-sm flex items-center gap-1 font-medium text-primary hover:text-primary/80"
                 >
-                    <IoIosArrowBack size={20} /> Back to medicines
+                    <IoIosArrowBack size={18} /> Back to medicines
                 </Link>
 
                 <header className="rounded-3xl flex flex-col gap-5 border border-slate-200 bg-white p-6 sm:p-10">
@@ -84,7 +84,7 @@ export default function MedicineDetails({ id }: Props) {
                         </p>
 
                         <div className="flex items-center justify-end gap-2 flex-wrap w-full flex-1">
-                            {medicineLanguages?.map((item) => (
+                            {languagesData?.isFetching ? <Loader /> : medicineLanguages?.map((item) => (
                                 <button
                                     key={item.language_code}
                                     onClick={() => setLanguage(item.language_code)}

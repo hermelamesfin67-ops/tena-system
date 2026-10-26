@@ -13,19 +13,20 @@ const blockedPaths = [
   "/_mmserverscripts",
 ];
 
-const publicPaths = [routes.signIn, routes.signOut, routes.error, routes.home];
+const publicPaths = [
+  routes.signIn,
+  routes.signOut,
+  routes.error,
+  routes.home,
+  routes.medicine,
+];
 
 export default withAuth(
   function middleware(request) {
     const { pathname } = request.nextUrl;
 
     // Allow public routes without authentication
-    if (
-      publicPaths.includes(pathname) ||
-      pathname === "/" ||
-      pathname === "/medicine" ||
-      pathname.startsWith("/medicine/")
-    ) {
+    if (publicPaths.includes(pathname) || pathname.startsWith("/medicine/")) {
       return NextResponse.next();
     }
 
@@ -52,11 +53,7 @@ export default withAuth(
         const pathname = req.nextUrl.pathname;
 
         // Public: /home and everything underneath it
-        if (
-          pathname === "/" ||
-          pathname === "/home" ||
-          pathname.startsWith("/home/")
-        ) {
+        if (pathname === "/" || pathname.startsWith("/medicine/")) {
           return true;
         }
 

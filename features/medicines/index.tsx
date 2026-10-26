@@ -32,6 +32,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useQueryClient } from '@tanstack/react-query';
 import { MedicineForm } from './create';
 import { RxUpdate } from 'react-icons/rx';
+import Link from 'next/link';
+import { routes } from '@/lib/routes';
 
 const categoryStyles = [
   'bg-emerald-50 text-emerald-700',
@@ -195,7 +197,11 @@ function Medicines() {
                         <TableCell className="whitespace-nowrap text-slate-600">{formatDate(medicine?.updated_at)}</TableCell>
                         <TableCell className='flex items-center justify-center gap-3'>
                           <Tooltip>
-                            <TooltipTrigger className={"cursor-pointer"} delay={100}><EyeIcon size={20} /></TooltipTrigger>
+                            <TooltipTrigger className={"cursor-pointer"} delay={100}>
+                              <Link href={routes.medicineDetails(medicine?.id)}>
+                                <EyeIcon size={20} />
+                              </Link>
+                            </TooltipTrigger>
                             <TooltipContent>
                               <p className='text-xs'>View Detail</p>
                             </TooltipContent>

@@ -37,9 +37,9 @@ export default function MedicineCard({ medicine, categories }: Props) {
             </div>
 
             <div className="flex flex-wrap gap-2">
-                {categoryNames?.map((category) => (
+                {categoryNames?.map((category, index) => (
                     <span
-                        key={category?.category}
+                        key={index}
                         className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600"
                     >
                         {category?.name}
