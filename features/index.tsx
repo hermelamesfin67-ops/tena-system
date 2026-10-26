@@ -1,6 +1,8 @@
 "use client"
 import MedicineSearch from "@/components/search";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
+import SectionWrapper from "@/components/section";
 
 function HomePage() {
     return (
@@ -8,7 +10,7 @@ function HomePage() {
             <Header />
 
             <main className="min-h-screen bg-slate-50">
-                <section className="border-b border-emerald-100 bg-linear-to-br from-emerald-50 via-white to-white">
+                <SectionWrapper>
                     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
                         <p className="text-sm font-semibold uppercase tracking-widest text-primary">
                             Your medicine information guide
@@ -24,20 +26,14 @@ function HomePage() {
                             important safety precautions.
                         </p>
                     </div>
-                </section>
+                </SectionWrapper>
+
 
                 <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
                     <MedicineSearch />
                 </section>
 
-                <footer className="border-t border-slate-200 bg-white">
-                    <div className="mx-auto max-w-7xl px-4 py-6 text-sm leading-6 text-slate-500 sm:px-6 lg:px-8">
-                        Medicine information is for educational purposes and does
-                        not replace advice from a qualified healthcare professional.
-                        Follow your prescription and consult a pharmacist or clinician
-                        if you have questions.
-                    </div>
-                </footer>
+                <Footer />
             </main>
         </>
     )

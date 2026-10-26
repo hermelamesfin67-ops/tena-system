@@ -1,12 +1,11 @@
 "use client";
 import { useState } from "react";
 import MedicineCard from "./medicine-card";
-import { Search } from "lucide-react";
+import { RefreshCw, Search } from "lucide-react";
 import { Button } from "./ui/button";
 import { useFetchData } from "@/api/use-fetch-data";
 import { queryKeys } from "@/api/query-keys";
 import Loader from "./loader";
-import { FiSearch } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
 import useDebounce from "react-use/lib/useDebounce";
 import TablePagination from "./table-pagination";
@@ -15,7 +14,7 @@ export default function MedicineSearch() {
     const queryClient = useQueryClient()
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(6);
+    const [pageSize, setPageSize] = useState(10);
     const [debouncedValue, setDebouncedValue] = useState("");
     const [category, setCategory] = useState("all");
 
@@ -55,7 +54,7 @@ export default function MedicineSearch() {
                     type="search"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search by medicine"
+                    placeholder="Search medicine"
                     aria-label="Search medicines"
                     className="w-full rounded-2xl border border-slate-200 bg-white py-4 pl-10 pr-4 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-emerald-50"
                 />
@@ -73,7 +72,7 @@ export default function MedicineSearch() {
                     }}
                     className="gradient-btn"
                 >
-                    <FiSearch />
+                    <RefreshCw />
                 </Button>
             </div>
 
@@ -96,9 +95,9 @@ export default function MedicineSearch() {
                 {categories?.map((item) => (
                     <button
                         key={item.slug}
-                        onClick={() => setCategory(item.id)}
-                        aria-pressed={category === item.id}
-                        className={`capitalize shrink-0 rounded-full px-4 py-2 text-sm font-medium ${category === item.id
+                        onClick={() => setCategory(item.slug)}
+                        aria-pressed={category === item.slug}
+                        className={`capitalize shrink-0 rounded-full px-4 py-2 text-sm font-medium ${category === item.slug
                             ? "bg-primary text-white"
                             : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                             }`}

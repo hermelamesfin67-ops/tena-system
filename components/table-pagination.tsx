@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select"
 import { cn } from "cn";
 
-const paginationLimitOptions = [5, 10, 25, 50].map((v, idx) => ({
+const paginationLimitOptions = [10, 20, 30, 40, 50].map((v, idx) => ({
   id: idx,
   label: String(v),
   value: v,
@@ -47,10 +47,10 @@ export default function TablePagination({
           </div>
         )
       ) : (
-        <div className="hidden items-center sm:flex whitespace-nowrap m-2 text-sm">
+        <div className="hidden items-center gap-3 sm:flex whitespace-nowrap m-2 text-xs">
           Rows per page:{" "}
           <Select items={paginationLimitOptions} defaultValue={pageSize} onValueChange={(v: any) => setPageSize && setPageSize(v)}>
-            <SelectTrigger className="w-fit">
+            <SelectTrigger size="sm" className="w-fit">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

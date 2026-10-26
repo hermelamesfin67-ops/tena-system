@@ -6,6 +6,7 @@ import Link from "next/link";
 import Loader from "@/components/loader";
 import { useMemo, useState } from "react";
 import { sections } from "@/constants";
+import TitleValueCard from "@/components/title-value-card";
 
 type Props = {
     id: string
@@ -15,7 +16,7 @@ export default function MedicineDetails({ id }: Props) {
     const [language, setLanguage] = useState("en");
     const medicineData = useFetchData(
         [queryKeys.getAllMedicine, id],
-        `drugs/${id}`,
+        `drugs/${id}/`,
     )
     const medicine: Medicine = medicineData.data
 
@@ -56,11 +57,15 @@ export default function MedicineDetails({ id }: Props) {
         };
     });
 
+
     if (medicineData.isFetching) return <Loader />
+    const hasTranslation = medicineTranslation &&
+        typeof medicineTranslation === "object" &&
+        Object.keys(medicineTranslation).length > 0
 
     return (
-        <main className="min-h-screen bg-slate-50">
-            <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <main className="min-h-screen flex flex-col justify-between mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 bg-slate-50">
+            <div className="flex flex-col gap-5">
                 <Link
                     href="/"
                     className="text-sm flex items-center gap-1.5 font-medium text-primary hover:text-primary/80"
@@ -68,13 +73,13 @@ export default function MedicineDetails({ id }: Props) {
                     <IoIosArrowBack size={20} /> Back to medicines
                 </Link>
 
-                <header className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 sm:p-10">
+                <header className="rounded-3xl flex flex-col gap-5 border border-slate-200 bg-white p-6 sm:p-10">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-2xl text-primary">
                         ✚
                     </div>
 
                     <div className="flex flex-col gap-3 md:flex-row w-full md:items-center">
-                        <p className="mt-6 text-sm font-medium text-primary">
+                        <p className="text-sm font-medium text-primary">
                             MEDICINE INFORMATION
                         </p>
 
@@ -95,59 +100,44 @@ export default function MedicineDetails({ id }: Props) {
                         </div>
                     </div>
 
-                    {/* {translation.short_description && (
+                    {hasTranslation && medicineTranslation?.short_description && (
                         <p className="mt-4 max-w-3xl leading-7 text-slate-600">
-                            {translation.short_description}
+                            {medicineTranslation?.short_description || "--"}
                         </p>
-                    )} */}
+                    )}
 
-                    <div className="mt-6 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-3">
-                        <div>
-                            <p className="text-sm text-slate-500">Name</p>
-                            <p className="mt-1 font-semibold text-slate-900">
-                                {medicineTranslation?.display_name || "--"}
-                            </p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Generic name</p>
-                            <p className="mt-1 font-semibold text-slate-900">
-                                {medicine?.generic_name}
-                            </p>
-                        </div>
+                    <div className="grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-3">
 
-                        {medicine?.brand_name && (
-                            <div>
-                                <p className="text-sm text-slate-500">Brand name</p>
-                                <p className="mt-1 font-semibold text-slate-900">
-                                    {medicine?.brand_name}
-                                </p>
-                            </div>
-                        )}
+                        <TitleValueCard title="Generic name" value={medicine?.generic_name} />
+                        {medicine?.brand_name && (<TitleValueCard title="Brand name" value={medicine?.brand_name} />)}
+                        <TitleValueCard
+                            title="Strength and form"
+                            value={[medicine?.strength, medicine?.dosage_form]
+                                .filter(Boolean)
+                                .join(" · ") || "Not specified"}
+                        />
 
-                        <div>
-                            <p className="text-sm text-slate-500">Strength and form</p>
-                            <p className="mt-1 font-semibold text-slate-900">
-                                {[medicine?.strength, medicine?.dosage_form]
-                                    .filter(Boolean)
-                                    .join(" · ") || "Not specified"}
-                            </p>
-                        </div>
                     </div>
 
-                    <div className="mt-6 flex flex-wrap gap-2">
-                        {categoryNames?.map((category) => (
-                            <span
-                                key={category?.category}
-                                className="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-700"
-                            >
-                                {category?.name}
-                            </span>
-                        ))}
+                    <div className="grid sm:grid-cols-3">
+                        {hasTranslation &&
+                            <TitleValueCard title="Medicine Name" value={medicineTranslation?.display_name || "--"} />}
+
+                        <div className="flex flex-wrap gap-2 sm:col-span-2">
+                            {categoryNames?.map((category) => (
+                                <span
+                                    key={category?.category}
+                                    className="rounded-full h-fit bg-slate-100 px-3 py-1.5 text-sm text-slate-700"
+                                >
+                                    {category?.name}
+                                </span>
+                            ))}
+                        </div>
                     </div>
                 </header>
 
                 {/* {translation.warnings && (
-                    <aside className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+                    <aside className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
                         <h2 className="font-semibold text-amber-950">
                             Important safety information
                         </h2>
@@ -157,13 +147,11 @@ export default function MedicineDetails({ id }: Props) {
                     </aside>
                 )} */}
 
-                <div className="mt-6 grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 md:grid-cols-2">
                     {sections?.map((section) => {
 
                         const content =
-                            medicineTranslation &&
-                                typeof medicineTranslation === "object" &&
-                                Object.keys(medicineTranslation).length > 0
+                            hasTranslation
                                 ? medicineTranslation[section.field]
                                 : undefined;
 
@@ -197,12 +185,13 @@ export default function MedicineDetails({ id }: Props) {
                     })}
                 </div>
 
-                <p className="mt-8 text-sm leading-6 text-slate-500">
-                    This information is educational and does not replace professional
-                    medical advice. Do not start, stop, or change a medicine without
-                    appropriate medical guidance.
-                </p>
             </div>
+
+            <p className="mt-8 text-sm leading-6 text-slate-500">
+                This information is educational and does not replace professional
+                medical advice. Do not start, stop, or change a medicine without
+                appropriate medical guidance.
+            </p>
         </main>
     );
 }
