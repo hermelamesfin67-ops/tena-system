@@ -50,7 +50,7 @@ export const useFetchData = (
         toast.error(error?.response?.data?.message);
       }
     },
-    placeholderData: (previousData) => previousData,
+    placeholderData: (previousData: any) => previousData,
     refetchOnWindowFocus: false,
     retry: true,
     enabled: enabled,
