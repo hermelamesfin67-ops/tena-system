@@ -1,4 +1,3 @@
-import React from 'react'
 import { AiOutlineMedicineBox } from "react-icons/ai";
 
 function Logo() {

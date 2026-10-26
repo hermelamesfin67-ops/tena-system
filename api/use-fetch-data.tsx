@@ -5,6 +5,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import EventEmitter from "events";
 import { toast } from "sonner";
 import { useGetHeaders } from "./use-get-headers";
+import { signOut } from "next-auth/react";
 
 export const sessionEventEmitter = new EventEmitter();
 interface Header extends AxiosRequestConfig {
@@ -17,15 +18,18 @@ interface Header extends AxiosRequestConfig {
 
 // --- Axios interceptor ---
 axios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   async (error) => {
-    //signout
+    if (
+      error.response?.status === 401 ||
+      error.response?.status === 403 ||
+      error.response?.status === 424
+    ) {
+      signOut()
+    }
     return Promise.reject(error);
   },
 );
-
 
 export const useFetchData = (
   queryKey: (string | number | boolean | undefined | null | any)[],

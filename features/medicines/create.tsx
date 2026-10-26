@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useFetchData } from '@/api/use-fetch-data';
 import { queryKeys } from '@/api/query-keys';
 import { hasObjectsDifferentValues } from '@/lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 export type MedicineValues = {
     generic_name: string;
@@ -23,6 +24,7 @@ export type MedicineValues = {
     is_active: boolean
 };
 export function MedicineForm({ medicine, setOpen, setIsEditOpen }: { medicine?: Medicine, setOpen?: (arg: boolean) => void, setIsEditOpen?: (arg: boolean) => void }) {
+    const queryClient = useQueryClient()
     const postMutation = useDynamicMutation({ type: "Json" })
     const categoryData = useFetchData(
         [queryKeys.getAllCategories],
@@ -54,7 +56,10 @@ export function MedicineForm({ medicine, setOpen, setIsEditOpen }: { medicine?: 
                     categories: values.categories
                 },
                 onSuccess: async () => {
-                    toast.loading(`Medicine ${medicine?.id ? "Updated" : "Created"} Successfully!`);
+                    queryClient.invalidateQueries({
+                        queryKey: [queryKeys.getAllMedicine],
+                    })
+                    toast.success(`Medicine ${medicine?.id ? "Updated" : "Created"} Successfully!`);
                     if (setIsEditOpen) setIsEditOpen(false)
                     if (setOpen) setOpen(false)
                 },
