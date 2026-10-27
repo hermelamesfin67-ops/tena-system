@@ -94,7 +94,7 @@ function Categories() {
                                                         ))}
                                                     </div>
                                                 </TableCell>
-                                                <TableCell className='flex items-center justify-center gap-3'>
+                                                <TableCell className='flex items-center gap-3'>
                                                     <Tooltip>
                                                         <TooltipTrigger className={"cursor-pointer"} delay={100}>
                                                             <Link href={routes.categoryDetails(category?.id)}>

@@ -14,7 +14,7 @@ function HomePage() {
             <main className="min-h-screen bg-slate-50">
                 <SectionWrapper>
                     <div
-                        className="relative overflow-hidden min-h-125 h-full"
+                        className="relative overflow-hidden h-full"
                     >
                         <div className="absolute inset-0">
                             <Image src={image} alt="" className="h-full w-full object-center object-cover brightness-[0.70] lg:brightness-100" />

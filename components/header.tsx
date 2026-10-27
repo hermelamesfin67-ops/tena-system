@@ -1,5 +1,4 @@
 "use client";
-
 import { cn } from "cn";
 import Logo from "./logo";
 import { ChevronRight } from "lucide-react";
@@ -25,12 +24,10 @@ export default function Header({ portal = false }: { portal?: boolean }) {
         !portal && "max-w-7xl mx-auto"
       )}
     >
-      <div>
-        <Logo />
-      </div>
+      <Logo />
       {session ?
         <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="outline" />} className={"bg-transparent focus:bg-transparent! flex items-center gap-3 cursor-pointer border-none!"}>
+          <DropdownMenuTrigger render={<Button variant="outline" />} className={"bg-none! focus:bg-none! focus:border-none! border-none! flex items-center gap-3 cursor-pointer"}>
             <div className="flex items-center gap-3 px-2">
               <div className="flex h-10 w-10 border uppercase items-center justify-center rounded-full bg-brand text-sm font-semibold">
                 {session?.user?.user?.username?.charAt(0)}
@@ -43,7 +40,9 @@ export default function Header({ portal = false }: { portal?: boolean }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuGroup>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href={routes.overview}>Dashboard</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => {
                 router.replace(routes.home)
                 signOut({ redirect: false })
