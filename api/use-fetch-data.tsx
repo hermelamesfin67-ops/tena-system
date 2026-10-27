@@ -6,6 +6,7 @@ import EventEmitter from "events";
 import { toast } from "sonner";
 import { useGetHeaders } from "./use-get-headers";
 import { signOut } from "next-auth/react";
+import { routes } from "@/lib/routes";
 
 export const sessionEventEmitter = new EventEmitter();
 interface Header extends AxiosRequestConfig {
@@ -25,7 +26,9 @@ axios.interceptors.response.use(
       error.response?.status === 403 ||
       error.response?.status === 424
     ) {
-      signOut()
+      toast.error("Login Required!!!")
+      window.location.replace(routes.signIn)
+      signOut({ redirect: false })
     }
     return Promise.reject(error);
   },
