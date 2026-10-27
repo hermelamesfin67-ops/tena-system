@@ -8,8 +8,8 @@ import TitleValueCard from "@/components/title-value-card";
 import { routes } from "@/lib/routes";
 import { useState } from "react";
 import { AddLanguage } from "./add-language";
-import { categoryStyles } from "..";
 import MedicineTranslationForm from "./medicine-translation";
+import { categoryStyles } from "@/features/categories";
 
 const breadcrumb = [{ name: "Medicines", href: routes.medicines }, { name: "Medicine Details" }];
 
@@ -38,7 +38,7 @@ function MedicinesDetails({ id }: { id: string }) {
     )
     const languages: Language[] = languagesData.data
 
-    const medicineLanguages = medicine?.translations?.map((translation) => {
+    const existingLanguages = medicine?.translations?.map((translation) => {
         const language = languages?.find(
             (lang) => lang.code === translation?.language_code
         );
@@ -48,7 +48,7 @@ function MedicinesDetails({ id }: { id: string }) {
             language_code: translation.language_code,
         };
     });
-    const mergedLanguages = addLanguage?.length ? [...medicineLanguages, ...addLanguage] : medicineLanguages
+    const mergedLanguages = addLanguage?.length ? [...existingLanguages, ...addLanguage] : existingLanguages
 
 
 

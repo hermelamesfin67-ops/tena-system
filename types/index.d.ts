@@ -8,7 +8,7 @@ type Language = {
 
 type CategoryTranslation = {
   id: string;
-  language: string;
+  language: Language;
   language_code: string;
   category: string;
   name: string;

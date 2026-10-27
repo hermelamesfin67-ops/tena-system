@@ -1,5 +1,5 @@
 "use client"
-import { EyeIcon, Plus, RefreshCw, Search } from 'lucide-react';
+import { Eye, PenLine, Plus, RefreshCw, Search } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -31,21 +31,11 @@ import { useDebounce } from 'react-use';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useQueryClient } from '@tanstack/react-query';
 import { MedicineForm } from './create';
-import { RxUpdate } from 'react-icons/rx';
 import Link from 'next/link';
 import { routes } from '@/lib/routes';
+import { categoryStyles } from '../categories';
+import { languageStyles } from '../language';
 
-export const categoryStyles = [
-  'bg-emerald-50 text-emerald-700',
-  'bg-blue-50 text-blue-700',
-  'bg-violet-50 text-violet-700',
-];
-
-const languageStyles = [
-  'bg-purple-50 text-purple-700',
-  'bg-amber-50 text-amber-700',
-  'bg-slate-50 text-slate-700',
-];
 const breadcrumb = [{ name: "Medicines" }];
 function Medicines() {
   const queryClient = useQueryClient()
@@ -198,7 +188,7 @@ function Medicines() {
                           <Tooltip>
                             <TooltipTrigger className={"cursor-pointer"} delay={100}>
                               <Link href={routes.medicineDetails(medicine?.id)}>
-                                <EyeIcon size={20} />
+                                <Eye size={20} />
                               </Link>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -218,7 +208,7 @@ function Medicines() {
                                     setEditingMedicineId("")
                                   }
                                 }}>
-                                <DialogTrigger render={<RxUpdate size={16} />} />
+                                <DialogTrigger render={<PenLine size={16} />} />
                                 <DialogContent className="sm:max-w-lg">
                                   <MedicineForm medicine={medicine} setIsEditOpen={setIsEditOpen} />
                                 </DialogContent>
@@ -253,7 +243,6 @@ function Medicines() {
         current={currentPage}
         onChange={(page: number) => setCurrentPage(page)}
       />
-
     </div>
   )
 }

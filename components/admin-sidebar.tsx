@@ -2,12 +2,13 @@
 import { Activity, Boxes, Globe2, LayoutDashboard } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { routes } from '@/lib/routes';
 
 const nav = [
-    { label: 'Overview', icon: LayoutDashboard, href: "/overview" },
-    { label: 'Medicines', icon: Activity, href: "/medicines" },
-    { label: 'Categories', icon: Boxes, href: "/categories" },
-    { label: 'Languages', icon: Globe2, href: "/languages" },
+    { label: 'Overview', icon: LayoutDashboard, href: routes.overview },
+    { label: 'Medicines', icon: Activity, href: routes.medicines },
+    { label: 'Categories', icon: Boxes, href: routes.category },
+    { label: 'Languages', icon: Globe2, href: routes.languages },
 ];
 export function AdminSidebar() {
     const pathName = usePathname()
