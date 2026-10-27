@@ -1,5 +1,5 @@
 
-import MedicinesDetails from "@/features/medicines/details";
+import MedicinesDetails from "@/features/medicines/detail";
 import { Suspense } from "react";
 
 type Props = {

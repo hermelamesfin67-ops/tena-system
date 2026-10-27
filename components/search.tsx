@@ -30,7 +30,6 @@ export default function MedicineSearch() {
     )
     const categories: Category[] = categoryData.data?.results
 
-
     const [,] = useDebounce(
         () => {
             setCurrentPage(1)
@@ -112,7 +111,7 @@ export default function MedicineSearch() {
                     Explore medicines
                 </h2>
                 <p className="text-sm text-slate-500">
-                    {medicineData.data?.total_medicines || "--"} found
+                    {medicineData.data?.count || "--"} found
                 </p>
             </div>
 
@@ -135,7 +134,7 @@ export default function MedicineSearch() {
                             setCurrentPage(1)
                             setPageSize(val)
                         }}
-                        total={medicineData.data?.total_medicines}
+                        total={medicineData.data?.count}
                         current={currentPage}
                         onChange={(page: number) => setCurrentPage(page)}
                     />

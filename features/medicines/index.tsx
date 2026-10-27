@@ -35,7 +35,7 @@ import { RxUpdate } from 'react-icons/rx';
 import Link from 'next/link';
 import { routes } from '@/lib/routes';
 
-const categoryStyles = [
+export const categoryStyles = [
   'bg-emerald-50 text-emerald-700',
   'bg-blue-50 text-blue-700',
   'bg-violet-50 text-violet-700',
@@ -57,7 +57,6 @@ function Medicines() {
   const [pageSize, setPageSize] = useState(10);
   const [debouncedValue, setDebouncedValue] = useState("");
   const [category, setCategory] = useState("");
-
 
   const medicineData = useFetchData(
     [queryKeys.getAllMedicine, debouncedValue, category, currentPage, pageSize],
@@ -250,7 +249,7 @@ function Medicines() {
           setCurrentPage(1)
           setPageSize(val)
         }}
-        total={medicineData.data?.total_medicines}
+        total={medicineData.data?.count}
         current={currentPage}
         onChange={(page: number) => setCurrentPage(page)}
       />

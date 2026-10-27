@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Pill } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,6 +13,7 @@ import { useFetchData } from '@/api/use-fetch-data';
 import { queryKeys } from '@/api/query-keys';
 import { hasObjectsDifferentValues } from '@/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
+import ModalHeader from '@/components/modal-header';
 
 export type MedicineValues = {
     generic_name: string;
@@ -80,15 +80,10 @@ export function MedicineForm({ medicine, setOpen, setIsEditOpen }: { medicine?: 
             createMedicine(val)
         }}>
         <Form className="space-y-5">
-            <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-emerald-50 p-3 text-brand">
-                    <Pill />
-                </div>
-                <div>
-                    <h2 className="font-semibold text-slate-900">{medicine?.id ? "Updated" : "Created"} Medicine</h2>
-                    <p className="text-sm text-slate-500">Core information about the medicine.</p>
-                </div>
-            </div>
+            <ModalHeader
+                title={`${medicine?.id ? "Updated" : "Created"} Medicine`}
+                description='Core information about the medicine.'
+            />
             <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                     <Label>Generic name *</Label>
@@ -127,20 +122,22 @@ export function MedicineForm({ medicine, setOpen, setIsEditOpen }: { medicine?: 
             </div>
             <div className="space-y-2">
                 <Label>Categories</Label>
-                <Field name="categories">{({ field, form }: any) =>
-                    <div className="flex flex-wrap gap-2">
-                        {categories
-                            ?.map(cat => <label key={cat.id} className={`cursor-pointer capitalize rounded-full border px-3 py-2 text-xs ${field.value.includes(cat.id) ? 'border-emerald-300 bg-emerald-50 text-brand' : 'border-slate-200 text-slate-600'}`}>
-                                <input
-                                    type="checkbox"
-                                    className="sr-only"
-                                    checked={field.value.includes(cat.id)}
-                                    onChange={e => form.setFieldValue('categories', e.target.checked ? [...field.value, cat.id] : field.value.filter((v: string) => v !== cat.id))}
-                                />
-                                {cat.slug}
-                            </label>
-                            )}
-                    </div>}
+                <Field name="categories">
+                    {({ field, form }: any) =>
+                        <div className="flex flex-wrap gap-2">
+                            {categories
+                                ?.map(cat => <label key={cat.id} className={`cursor-pointer capitalize rounded-full border px-3 py-2 text-xs ${field.value.includes(cat.id) ? 'border-emerald-300 bg-emerald-50 text-brand' : 'border-slate-200 text-slate-600'}`}>
+                                    <input
+                                        type="checkbox"
+                                        className="sr-only"
+                                        checked={field.value.includes(cat.id)}
+                                        onChange={e => form.setFieldValue('categories', e.target.checked ? [...field.value, cat.id] : field.value.filter((v: string) => v !== cat.id))}
+                                    />
+                                    {cat.slug}
+                                </label>
+                                )}
+                        </div>
+                    }
                 </Field>
             </div>
             {/* <label className="flex items-center gap-3 text-sm text-slate-700">

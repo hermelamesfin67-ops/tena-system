@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { languageSchema } from '@/validations/language.schema';
+import ModalHeader from '@/components/modal-header';
 
 export type LanguageValues = {
     code: string;
@@ -17,16 +18,11 @@ export function LanguageForm() {
 
     return <Formik initialValues={initialValues} validationSchema={languageSchema} onSubmit={() => { }}>
         <Form className="space-y-5">
-            <div className="mb-2 flex items-center gap-3">
-                <div className="rounded-xl bg-emerald-50 p-3 text-brand"><Globe2 />
-                </div>
-                <div>
-                    <h2 className="font-semibold text-slate-900">Language details</h2>
-                    <p className="text-sm text-slate-500">
-                        Configure a language available for localized content.
-                    </p>
-                </div>
-            </div>
+            <ModalHeader
+                title='Language details'
+                description='Configure a language available for localized content.'
+                icon={<Globe2 />}
+            />
             <div className="space-y-2">
                 <Label htmlFor="code">
                     Language code *

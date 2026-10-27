@@ -124,9 +124,9 @@ export default function MedicineDetails({ id }: Props) {
                             <TitleValueCard title="Medicine Name" value={medicineTranslation?.display_name || "--"} />}
 
                         <div className="flex flex-wrap gap-2 sm:col-span-2">
-                            {categoryNames?.map((category) => (
+                            {categoryNames?.map((category, index) => (
                                 <span
-                                    key={category?.category}
+                                    key={index}
                                     className="rounded-full h-fit bg-slate-100 px-3 py-1.5 text-sm text-slate-700"
                                 >
                                     {category?.name}

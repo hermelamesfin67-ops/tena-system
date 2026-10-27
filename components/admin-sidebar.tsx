@@ -12,7 +12,7 @@ const nav = [
 export function AdminSidebar() {
     const pathName = usePathname()
 
-    return <div className="hidden md:flex min-h-[90dvh] h-full w-60 shrink-0 flex-col border-r border-slate-200 bg-[#f8fcfa] px-4 py-5">
+    return <div className="hidden lg:flex min-h-[90dvh] h-full w-60 shrink-0 flex-col border-r border-slate-200 bg-[#f8fcfa] px-4 py-5">
         <div className="space-y-1">
             {nav.map(({ label, href, icon: Icon }) =>
                 <Link key={label} href={href}
