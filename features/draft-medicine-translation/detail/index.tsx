@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { routes } from "@/lib/routes";
 import { useState } from "react";
-import { RejectRequest } from "../reject";
-import { PublishRequest } from "../publish";
+import { RejectRequest } from "./reject";
+import { PublishRequest } from "./publish";
 
 const breadcrumb = [{ name: "Draft Medicine Translations", href: routes.draftMedicineTranslations }, { name: "Details" }];
 
@@ -19,9 +19,9 @@ function DraftMedicineTranslationDetail({ id }: { id: string }) {
 
     const draftData = useFetchData(
         [queryKeys.getAllMedicineDrat, id],
-        `drug-translations/drafts/`,
+        `drug-translation/drafts/${id}/`,
     )
-    const draftMedicine: MedicineTranslation = draftData.data?.length ? draftData.data[0] : {}
+    const draftMedicine: MedicineTranslation = draftData.data
 
     if (draftData?.isFetching) return <Loader />
 

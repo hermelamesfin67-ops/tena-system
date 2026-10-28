@@ -76,7 +76,7 @@ function Pharmacist() {
                                                 </TableCell>
 
                                                 <TableCell>
-                                                    <div className="font-medium uppercase text-slate-900">
+                                                    <div className="font-medium text-slate-900">
                                                         {usr?.email}
                                                     </div>
                                                 </TableCell>

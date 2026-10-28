@@ -87,7 +87,7 @@ function DraftMedicineTranslations() {
                                     })
                                         : <TableRow className='h-36 w-full flex items-center justify-center'>
                                             <TableCell className="font-semibold text-slate-600">
-                                                No draftMedicine found
+                                                No Draft Medicine translation found
                                             </TableCell>
                                         </TableRow>
                             }
