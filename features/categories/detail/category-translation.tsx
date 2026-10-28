@@ -44,7 +44,7 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
 
     const uniqueLanguages = Array.from(
         new Map(
-            (mergedLanguages ?? []).map((lang) => [
+            (mergedLanguages ?? [])?.map((lang) => [
                 lang.language_code,
                 lang,
             ])
@@ -82,7 +82,6 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
         }
     );
 
-    type TranslationAction = "create" | "update";
 
     const handleLanguageTranslation = async (
         values: CategoryTranslation
@@ -179,7 +178,7 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
                 }}
                 enableReinitialize
             >
-                {({ values, isSubmitting }) => {
+                {({ values }) => {
                     const selectedIndex = values.translations?.findIndex(
                         (t) => t.language_code === language
                     );
@@ -188,6 +187,7 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
                     // Distinguishes a database translation from a new translation.
                     const translationAction: TranslationAction =
                         selectedTranslation?.id ? "update" : "create";
+                    const isUpdate = translationAction === "update";
 
                     return (
                         <Form className="flex flex-col gap-5">
@@ -298,12 +298,12 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
                                 {selectedTranslation && <div className="flex justify-end">
                                     <button
                                         type="submit"
-                                        disabled={isSubmitting || translationAction === "update"}
+                                        disabled={postMutation.isPending || isUpdate}
                                         className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
                                     >
-                                        {isSubmitting
+                                        {postMutation.isPending
                                             ? "Saving..."
-                                            : translationAction === "update"
+                                            : isUpdate
                                                 ? <span>Save Changes ({selectedTranslation?.language_code?.toUpperCase()})</span>
                                                 : <span>Create ({selectedTranslation?.language_code?.toUpperCase()}) Translations</span>
                                         }

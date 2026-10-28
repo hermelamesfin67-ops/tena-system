@@ -91,6 +91,7 @@ function MedicinesDetails({ id }: { id: string }) {
                 <MedicineTranslationForm
                     medicineId={id}
                     languageFetching={languagesData.isFetching}
+                    translations={medicine?.translations}
                     mergedLanguages={mergedLanguages}
                     setAddLanguage={setAddLanguage}
                 />

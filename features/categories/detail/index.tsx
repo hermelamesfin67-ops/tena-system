@@ -41,8 +41,6 @@ function CategoryDetails({ id }: { id: string }) {
     }) || [];
     const mergedLanguages = addLanguage?.length ? [...existingLanguages, ...addLanguage] : existingLanguages
 
-
-
     if (categoryData?.isFetching) return <Loader />
 
     return (

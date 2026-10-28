@@ -22,7 +22,7 @@ const nav = [
 const NavLinks = ({ pathName, setIsOpen, mobile = false }: { pathName: string, setIsOpen: (arg: boolean) => void, mobile?: boolean }) => (
     <div className="space-y-1">
         {nav.map(({ label, href, icon: Icon }) => {
-            const isActive = pathName === href;
+            const isActive = pathName?.includes(href);
 
             return (
                 <Link

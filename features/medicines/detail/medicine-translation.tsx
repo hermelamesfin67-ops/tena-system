@@ -20,40 +20,75 @@ type TranslationFormValues = {
     translations: MedicineTranslation[];
 };
 
-const createEmptyTranslation = (language: Language): MedicineTranslation => ({
-    language,
-    language_code: language.code,
-    display_name: "",
-    short_description: "",
-    what_it_treats: "",
-    how_to_use: "",
-    when_to_use: "",
-    side_effects: "",
-    warnings: "",
-    storage_instructions: "",
-    review_status: "draft",
-});
-
 type Props = {
     medicineId: string
     languageFetching: boolean
     mergedLanguages: AddLanguage[]
+    translations: MedicineTranslation[]
     setAddLanguage: (arg: AddLanguage[]) => void
 }
 
-function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages, setAddLanguage }: Props) {
+function MedicineTranslationForm({ medicineId, translations, languageFetching, mergedLanguages, setAddLanguage }: Props) {
     const queryClient = useQueryClient()
     const postMutation = useDynamicMutation({ type: "Json" })
     const [open, setOpen] = useState(false);
-    const [language, setLanguage] = useState("");
 
-    const initialTranslations: MedicineTranslation[] = [];
+    const uniqueLanguages = Array.from(
+        new Map(
+            (mergedLanguages ?? [])?.map((lang) => [
+                lang.language_code,
+                lang,
+            ])
+        ).values()
+    );
+    const [language, setLanguage] = useState(uniqueLanguages?.length ? uniqueLanguages[0]?.language_code : "");
+
+    const initialTranslations: MedicineTranslation[] = uniqueLanguages?.map(
+        (lang) => {
+            const existingTranslation = (translations ?? [])?.find(
+                (translation) =>
+                    translation.language_code === lang.language_code ||
+                    (
+                        typeof translation.language === "object" &&
+                        translation.language?.code === lang.language_code
+                    )
+            );
+
+            return existingTranslation
+                ? {
+                    ...existingTranslation,
+                    language_code: lang.language_code,
+                }
+                : {
+                    id: "",
+                    language: {
+                        id: lang.id,
+                        code: lang.language_code,
+                    } as Language,
+                    language_code: lang?.language_code,
+                    display_name: "",
+                    short_description: "",
+                    what_it_treats: "",
+                    how_to_use: "",
+                    when_to_use: "",
+                    side_effects: "",
+                    warnings: "",
+                    storage_instructions: "",
+                    review_status: "draft",
+                };
+        }
+    );
 
     const handleLanguageTranslation = async (values: MedicineTranslation | null) => {
+        const translationAction: TranslationAction = values?.id
+            ? "update"
+            : "create";
+
+        const isUpdate = translationAction === "update";
         try {
             await postMutation.mutateAsync({
-                url: `drugs/translations/create/`,
-                method: "POST",
+                url: isUpdate ? `` : `drugs/translations/create/`,
+                method: isUpdate ? "PUT" : "POST",
                 body: {
                     drug: medicineId,
                     language: values?.language?.id,
@@ -76,23 +111,19 @@ function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages
             console.error(err);
         }
     };
+
     return (
         <div className="col-span-2 w-full">
             <Formik<TranslationFormValues>
                 initialValues={{
-                    translations: (mergedLanguages ?? []).map((lang) => {
-                        const code = lang.language_code;
-
-                        return (
-                            initialTranslations?.find(
-                                (t) => t.language_code === code
-                            ) ?? createEmptyTranslation(lang as unknown as Language)
-                        );
-                    }),
+                    translations: initialTranslations,
                 }}
-                onSubmit={async (values, { setSubmitting, setFieldError }) => {
-                    const selectedTranslation = values.translations.find(
-                        (t) => t.language_code === language
+                onSubmit={async (
+                    values,
+                    { setSubmitting, setFieldError }
+                ) => {
+                    const selectedTranslation = values.translations?.find(
+                        (translation) => translation.language_code === language
                     );
 
                     if (!selectedTranslation) {
@@ -101,21 +132,27 @@ function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages
                     }
 
                     try {
-                        // Validate only the selected translation
                         await singleTranslationSchema.validate(
                             selectedTranslation,
                             { abortEarly: false }
                         );
-                        handleLanguageTranslation(values?.translations?.find((tr) => tr.language_code === language) || null)
+
+                        // Use the selected translation, not the entire translations array.
+                        await handleLanguageTranslation(
+                            selectedTranslation
+                        );
+
                     } catch (error) {
                         if (error instanceof Yup.ValidationError) {
                             error.inner.forEach((validationError) => {
                                 if (validationError.path) {
+                                    const index = values.translations?.findIndex(
+                                        (translation) =>
+                                            translation.language_code === language
+                                    );
+
                                     setFieldError(
-                                        `translations[${values.translations.findIndex(
-                                            (t) =>
-                                                t.language_code === language
-                                        )}].${validationError.path}`,
+                                        `translations[${index}].${validationError.path}`,
                                         validationError.message
                                     );
                                 }
@@ -130,11 +167,17 @@ function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages
                 enableReinitialize
             >
                 {({ values }) => {
-                    const selectedIndex = values.translations.findIndex(
+                    const selectedIndex = values.translations?.findIndex(
                         (t) => t.language_code === language
                     );
-
                     const selectedTranslation = values.translations[selectedIndex];
+
+                    // Distinguishes a database translation from a new translation.
+                    const translationAction: TranslationAction =
+                        selectedTranslation?.id ? "update" : "create";
+                    const isUpdate = translationAction === "update";
+
+
                     return (
                         <Form className="flex flex-col gap-5">
                             <div className="flex flex-col gap-5 border border-black/10 rounded-md p-3">
@@ -147,7 +190,7 @@ function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages
                                     {languageFetching ? (
                                         <Loader />
                                     ) : (
-                                        mergedLanguages?.map((item) => {
+                                        uniqueLanguages?.map((item) => {
                                             const code =
                                                 item.language_code;
 
@@ -181,7 +224,7 @@ function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages
                                         <DialogContent className="sm:max-w-lg">
                                             <AddLanguageForm
                                                 setOpen={setOpen}
-                                                medicineLanguages={mergedLanguages}
+                                                medicineLanguages={uniqueLanguages}
                                                 setAddLanguage={setAddLanguage} />
                                         </DialogContent>
                                     </Dialog>
@@ -273,12 +316,15 @@ function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages
                                 {selectedTranslation && <div className="flex justify-end">
                                     <button
                                         type="submit"
-                                        disabled={postMutation.isPending}
+                                        disabled={postMutation.isPending || isUpdate}
                                         className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
                                     >
                                         {postMutation.isPending
                                             ? "Saving..."
-                                            : "Save Translations"}
+                                            : isUpdate
+                                                ? <span>Save Changes ({selectedTranslation?.language_code?.toUpperCase()})</span>
+                                                : <span>Create ({selectedTranslation?.language_code?.toUpperCase()}) Translations</span>
+                                        }
                                     </button>
                                 </div>}
                             </div>

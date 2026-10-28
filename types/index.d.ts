@@ -1,3 +1,4 @@
+type TranslationAction = "create" | "update";
 type Language = {
   id: string;
   code: string;
@@ -22,6 +23,7 @@ type Category = {
 };
 
 type MedicineTranslation = {
+  id: string;
   language: Language;
   language_code: string;
   display_name: string;
@@ -35,7 +37,7 @@ type MedicineTranslation = {
   review_status: "draft" | "reviewed" | "published";
 };
 
-type MedicineStatus = 'Published' | 'In review' | 'Draft';
+type MedicineStatus = "Published" | "In review" | "Draft";
 type Medicine = {
   id: string;
   generic_name: string;
