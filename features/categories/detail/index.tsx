@@ -34,6 +34,7 @@ function CategoryDetails({ id }: { id: string }) {
         );
 
         return {
+            id: language?.id || "",
             native_name: language?.native_name || "",
             language_code: translation.language_code,
         };
