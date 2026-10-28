@@ -6,6 +6,7 @@ import {
     Boxes,
     Globe2,
     LayoutDashboard,
+    Users,
     X,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -15,8 +16,10 @@ import { routes } from '@/lib/routes';
 const nav = [
     { label: 'Overview', icon: LayoutDashboard, href: routes.overview },
     { label: 'Medicines', icon: Activity, href: routes.medicines },
+    { label: 'Draft Medicine Translations', icon: Activity, href: routes.draftMedicineTranslations },
     { label: 'Categories', icon: Boxes, href: routes.category },
     { label: 'Languages', icon: Globe2, href: routes.languages },
+    { label: 'Pharmacist', icon: Users, href: routes.pharmacist },
 ];
 
 const NavLinks = ({ pathName, setIsOpen, mobile = false }: { pathName: string, setIsOpen: (arg: boolean) => void, mobile?: boolean }) => (

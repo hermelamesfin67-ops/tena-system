@@ -157,10 +157,6 @@ export default function MedicineDetails({ id }: Props) {
 
                         if (!content) return null;
 
-                        const isWarning = section.field === "warnings";
-
-                        // Warnings are already shown prominently above.
-                        if (isWarning) return null;
 
                         return (
                             <section

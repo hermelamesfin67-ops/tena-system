@@ -1,4 +1,10 @@
 type TranslationAction = "create" | "update";
+type Pharmacist = {
+  id: string;
+  email: string;
+  username: string;
+  password: string;
+};
 type Language = {
   id: string;
   code: string;
@@ -32,8 +38,8 @@ type MedicineTranslation = {
   how_to_use: string;
   when_to_use: string;
   side_effects: string;
-  warnings: string;
   storage_instructions: string;
+  updated_at: Date;
   review_status: "draft" | "reviewed" | "published";
 };
 

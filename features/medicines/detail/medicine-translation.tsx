@@ -72,8 +72,8 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                     how_to_use: "",
                     when_to_use: "",
                     side_effects: "",
-                    warnings: "",
                     storage_instructions: "",
+                    updated_at: new Date(),
                     review_status: "draft",
                 };
         }
@@ -87,8 +87,8 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
         const isUpdate = translationAction === "update";
         try {
             await postMutation.mutateAsync({
-                url: isUpdate ? `` : `drugs/translations/create/`,
-                method: isUpdate ? "PUT" : "POST",
+                url: isUpdate ? `drug-translations/${values?.id}/` : `drugs/translations/create/`,
+                method: isUpdate ? "PATCH" : "POST",
                 body: {
                     drug: medicineId,
                     language: values?.language?.id,
@@ -240,7 +240,6 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                                                 ["how_to_use", "How to Use"],
                                                 ["when_to_use", "When to Use"],
                                                 ["side_effects", "Side Effects"],
-                                                ["warnings", "Warnings"],
                                                 [
                                                     "storage_instructions",
                                                     "Storage Instructions",
@@ -298,6 +297,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                                             <Field
                                                 as="select"
                                                 id="review_status"
+                                                disabled
                                                 name={`translations[${selectedIndex}].review_status`}
                                                 className="w-full rounded-md border border-slate-200 bg-white p-3 text-sm"
                                             >
@@ -316,7 +316,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                                 {selectedTranslation && <div className="flex justify-end">
                                     <button
                                         type="submit"
-                                        disabled={postMutation.isPending || isUpdate}
+                                        disabled={postMutation.isPending}
                                         className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
                                     >
                                         {postMutation.isPending

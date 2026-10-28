@@ -20,7 +20,7 @@ export const singleTranslationSchema = Yup.object({
   how_to_use: Yup.string().required("This field is required"),
   when_to_use: Yup.string().required("This field is required"),
   side_effects: Yup.string().required("This field is required"),
-  warnings: Yup.string().required("This field is required"),
+  // warnings: Yup.string().required("This field is required"),
   storage_instructions: Yup.string().required("This field is required"),
   review_status: Yup.string()
     .oneOf(["draft", "reviewed", "published"])

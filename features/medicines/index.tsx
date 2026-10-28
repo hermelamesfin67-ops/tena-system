@@ -133,7 +133,7 @@ function Medicines() {
                 <TableHead>Medicine</TableHead>
                 <TableHead>Categories</TableHead>
                 <TableHead>Languages</TableHead>
-                <TableHead>Last updated</TableHead>
+                <TableHead>Last Updated</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>

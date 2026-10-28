@@ -64,7 +64,7 @@ function SingIn() {
                                         id="username"
                                         name="username"
                                         label="Username"
-                                        pattern="username"
+                                        // pattern="username"
                                         placeholder="Enter username"
                                     />
                                     <FormikMaskedInput

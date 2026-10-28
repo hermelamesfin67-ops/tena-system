@@ -3,4 +3,6 @@ export const queryKeys = {
   getAllCategories: "getAllCategoriesApi",
   getAllLanguages: "getAllLanguagesApi",
   getAllDrugInteractions: "getAllDrugInteractionsApi",
+  getAllPharmacist: "getAllPharmacistApi",
+  getAllMedicineDrat: "getAllMedicineDratApi",
 };

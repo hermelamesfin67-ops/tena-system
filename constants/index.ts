@@ -19,11 +19,11 @@ export const sections = [
         field: "side_effects",
         icon: "!",
     },
-    {
-        title: "Warnings and precautions",
-        field: "warnings",
-        icon: "⚠",
-    },
+    // {
+    //     title: "Warnings and precautions",
+    //     field: "warnings",
+    //     icon: "⚠",
+    // },
     {
         title: "Storage instructions",
         field: "storage_instructions",
