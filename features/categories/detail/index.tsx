@@ -10,7 +10,7 @@ import { useState } from "react";
 import { AddLanguage } from "@/features/medicines/detail/add-language";
 import CategoryTranslationForm from "./category-translation";
 
-const breadcrumb = [{ name: "Categories", href: routes.medicines }, { name: "Category Details" }];
+const breadcrumb = [{ name: "Categories", href: routes.category }, { name: "Category Details" }];
 
 function CategoryDetails({ id }: { id: string }) {
 
@@ -20,7 +20,7 @@ function CategoryDetails({ id }: { id: string }) {
         [queryKeys.getAllCategories, id],
         `categories/${id}/`,
     )
-    const categories: Category = categoryData.data?.results
+    const categories: Category = categoryData.data
 
     const languagesData = useFetchData(
         [queryKeys.getAllLanguages],
@@ -56,7 +56,7 @@ function CategoryDetails({ id }: { id: string }) {
                         description=""
                     />
                     <div className="grid xl:grid-cols-2 gap-3">
-                        <TitleValueCard title="Generic Name" value={categories?.slug} />
+                        <TitleValueCard title="Category Name" value={categories?.slug} />
                     </div>
                 </div>
 
@@ -64,6 +64,7 @@ function CategoryDetails({ id }: { id: string }) {
                 <CategoryTranslationForm
                     categoryId={id}
                     languageFetching={languagesData.isFetching}
+                    translations={categories?.translations}
                     mergedLanguages={mergedLanguages}
                     setAddLanguage={setAddLanguage}
                 />

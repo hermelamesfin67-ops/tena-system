@@ -56,7 +56,7 @@ function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages
                 method: "POST",
                 body: {
                     drug: medicineId,
-                    language: values?.language_code,
+                    language: values?.language?.id,
                     display_name: values?.display_name,
                     short_description: values?.short_description,
                     what_it_treats: values?.what_it_treats,
@@ -129,7 +129,7 @@ function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages
                 }}
                 enableReinitialize
             >
-                {({ values, isSubmitting }) => {
+                {({ values }) => {
                     const selectedIndex = values.translations.findIndex(
                         (t) => t.language_code === language
                     );
@@ -273,10 +273,10 @@ function MedicineTranslationForm({ medicineId, languageFetching, mergedLanguages
                                 {selectedTranslation && <div className="flex justify-end">
                                     <button
                                         type="submit"
-                                        disabled={isSubmitting}
+                                        disabled={postMutation.isPending}
                                         className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
                                     >
-                                        {isSubmitting
+                                        {postMutation.isPending
                                             ? "Saving..."
                                             : "Save Translations"}
                                     </button>

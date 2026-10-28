@@ -17,6 +17,7 @@ export type LanguageValues = {
 export type AddLanguage = {
     native_name: string,
     language_code: string,
+    id: string,
 }
 type Props = {
     medicineLanguages: AddLanguage[]
@@ -60,7 +61,6 @@ export function AddLanguageForm({ medicineLanguages, setOpen, setAddLanguage }: 
                                     disabled={medicineLanguages?.map((lan) => lan?.language_code)?.includes(lang.code)}
                                     checked={values.languages?.map((lan) => lan?.language_code)?.includes(lang.code)}
                                     onChange={(e) => {
-                                        console.log(lang)
                                         const isChecked = e.target.checked;
                                         setFieldValue(
                                             'languages',
@@ -72,6 +72,7 @@ export function AddLanguageForm({ medicineLanguages, setOpen, setAddLanguage }: 
                                                     {
                                                         ...lang,
                                                         language_code: lang.code,
+                                                        id: lang.id,
                                                     },
                                                 ]
                                                 : (values.languages || []).filter(

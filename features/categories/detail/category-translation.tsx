@@ -20,69 +20,123 @@ type TranslationFormValues = {
     translations: CategoryTranslation[];
 };
 
-const createEmptyTranslation = (language: Language): CategoryTranslation => ({
-    id: "",
-    category: "",
-    language: language,
-    language_code: language?.code,
-    name: "",
-    description: ""
-});
+// const createEmptyTranslation = (language: Language): CategoryTranslation => ({
+//     id: "",
+//     category: "",
+//     language: language,
+//     language_code: language?.code,
+//     name: "",
+//     description: ""
+// });
 
 type Props = {
     categoryId: string
     languageFetching: boolean
     mergedLanguages: AddLanguage[]
+    translations: CategoryTranslation[]
     setAddLanguage: (arg: AddLanguage[]) => void
 }
 
-function CategoryTranslationForm({ categoryId, languageFetching, mergedLanguages, setAddLanguage }: Props) {
+function CategoryTranslationForm({ categoryId, translations, languageFetching, mergedLanguages, setAddLanguage }: Props) {
     const queryClient = useQueryClient()
     const postMutation = useDynamicMutation({ type: "Json" })
     const [open, setOpen] = useState(false);
-    const [language, setLanguage] = useState("");
 
-    const initialTranslations: CategoryTranslation[] = [];
+    const uniqueLanguages = Array.from(
+        new Map(
+            (mergedLanguages ?? []).map((lang) => [
+                lang.language_code,
+                lang,
+            ])
+        ).values()
+    );
+    const [language, setLanguage] = useState(uniqueLanguages?.length ? uniqueLanguages[0]?.language_code : "");
 
-    const handleLanguageTranslation = async (values: CategoryTranslation | null) => {
+    const initialTranslations: CategoryTranslation[] = uniqueLanguages?.map(
+        (lang) => {
+            const existingTranslation = (translations ?? [])?.find(
+                (translation) =>
+                    translation.language_code === lang.language_code ||
+                    (
+                        typeof translation.language === "object" &&
+                        translation.language?.code === lang.language_code
+                    )
+            );
+
+            return existingTranslation
+                ? {
+                    ...existingTranslation,
+                    language_code: lang.language_code,
+                }
+                : {
+                    id: "",
+                    category: categoryId,
+                    language: {
+                        id: lang.id,
+                        code: lang.language_code,
+                    } as Language,
+                    language_code: lang.language_code,
+                    name: "",
+                    description: "",
+                };
+        }
+    );
+
+    type TranslationAction = "create" | "update";
+
+    const handleLanguageTranslation = async (
+        values: CategoryTranslation
+    ): Promise<TranslationAction> => {
+        const translationAction: TranslationAction = values.id
+            ? "update"
+            : "create";
+
+        const isUpdate = translationAction === "update";
+
         try {
             await postMutation.mutateAsync({
-                url: `categories/translations/create/`,
-                method: "POST",
+                url: isUpdate
+                    ? `categories/translations/update/${values.id}/`
+                    : "categories/translations/create/",
+                method: isUpdate ? "PUT" : "POST",
                 body: {
                     category: categoryId,
-                    language: values?.language_code,
-                    name: "",
-                    description: ""
+                    language: values?.language?.id,
+                    name: values.name,
+                    description: values.description,
                 },
                 onSuccess: () => {
                     queryClient.invalidateQueries({
                         queryKey: [queryKeys.getAllCategories],
-                    })
-                    toast.success("Translation submitted successfully!");
+                    });
+
+                    toast.success(
+                        isUpdate
+                            ? "Translation updated successfully!"
+                            : "Translation created successfully!"
+                    );
                 },
             });
+
+            return translationAction;
         } catch (err) {
-            console.error(err);
+            console.error("Failed to save translation:", err);
+            throw err;
         }
     };
+
     return (
         <div className="col-span-2 w-full">
             <Formik<TranslationFormValues>
                 initialValues={{
-                    translations: (mergedLanguages ?? []).map((lang) => {
-                        const code = lang.language_code;
-
-                        return (
-                            initialTranslations?.find(
-                                (t) => t.language_code === code
-                            ) ?? createEmptyTranslation(lang as unknown as Language)
-                        );
-                    }),
+                    translations: initialTranslations,
                 }}
-                onSubmit={async (values, { setSubmitting, setFieldError }) => {
-                    const selectedTranslation = values.translations.find(
-                        (t) => t.language_code === language
+                onSubmit={async (
+                    values,
+                    { setSubmitting, setFieldError }
+                ) => {
+                    const selectedTranslation = values.translations?.find(
+                        (translation) => translation.language_code === language
                     );
 
                     if (!selectedTranslation) {
@@ -91,21 +145,27 @@ function CategoryTranslationForm({ categoryId, languageFetching, mergedLanguages
                     }
 
                     try {
-                        // Validate only the selected translation
                         await singleTranslationSchema.validate(
                             selectedTranslation,
                             { abortEarly: false }
                         );
-                        handleLanguageTranslation(values?.translations?.find((tr) => tr.language_code === language) || null)
+
+                        // Use the selected translation, not the entire translations array.
+                        await handleLanguageTranslation(
+                            selectedTranslation
+                        );
+
                     } catch (error) {
                         if (error instanceof Yup.ValidationError) {
                             error.inner.forEach((validationError) => {
                                 if (validationError.path) {
+                                    const index = values.translations?.findIndex(
+                                        (translation) =>
+                                            translation.language_code === language
+                                    );
+
                                     setFieldError(
-                                        `translations[${values.translations.findIndex(
-                                            (t) =>
-                                                t.language_code === language
-                                        )}].${validationError.path}`,
+                                        `translations[${index}].${validationError.path}`,
                                         validationError.message
                                     );
                                 }
@@ -120,11 +180,15 @@ function CategoryTranslationForm({ categoryId, languageFetching, mergedLanguages
                 enableReinitialize
             >
                 {({ values, isSubmitting }) => {
-                    const selectedIndex = values.translations.findIndex(
+                    const selectedIndex = values.translations?.findIndex(
                         (t) => t.language_code === language
                     );
-
                     const selectedTranslation = values.translations[selectedIndex];
+
+                    // Distinguishes a database translation from a new translation.
+                    const translationAction: TranslationAction =
+                        selectedTranslation?.id ? "update" : "create";
+
                     return (
                         <Form className="flex flex-col gap-5">
                             <div className="flex flex-col gap-5 border border-black/10 rounded-md p-3">
@@ -137,13 +201,12 @@ function CategoryTranslationForm({ categoryId, languageFetching, mergedLanguages
                                     {languageFetching ? (
                                         <Loader />
                                     ) : (
-                                        mergedLanguages?.map((item) => {
-                                            const code =
-                                                item.language_code;
+                                        uniqueLanguages?.map((item, index) => {
+                                            const code = item.language_code;
 
                                             return (
                                                 <button
-                                                    key={code}
+                                                    key={index}
                                                     type="button"
                                                     aria-pressed={language === code}
                                                     onClick={() => setLanguage(code)}
@@ -163,6 +226,7 @@ function CategoryTranslationForm({ categoryId, languageFetching, mergedLanguages
                                     <Dialog open={open} onOpenChange={setOpen}>
                                         <DialogTrigger render={<div>
                                             <button
+                                                type="button"
                                                 className={"capitalize shrink-0 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-medium border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}
                                             >
                                                 <Plus size={17} /> Add Language
@@ -171,7 +235,7 @@ function CategoryTranslationForm({ categoryId, languageFetching, mergedLanguages
                                         <DialogContent className="sm:max-w-lg">
                                             <AddLanguageForm
                                                 setOpen={setOpen}
-                                                medicineLanguages={mergedLanguages}
+                                                medicineLanguages={uniqueLanguages}
                                                 setAddLanguage={setAddLanguage} />
                                         </DialogContent>
                                     </Dialog>
@@ -234,12 +298,15 @@ function CategoryTranslationForm({ categoryId, languageFetching, mergedLanguages
                                 {selectedTranslation && <div className="flex justify-end">
                                     <button
                                         type="submit"
-                                        disabled={isSubmitting}
+                                        disabled={isSubmitting || translationAction === "update"}
                                         className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
                                     >
                                         {isSubmitting
                                             ? "Saving..."
-                                            : "Save Translations"}
+                                            : translationAction === "update"
+                                                ? <span>Save Changes ({selectedTranslation?.language_code?.toUpperCase()})</span>
+                                                : <span>Create ({selectedTranslation?.language_code?.toUpperCase()}) Translations</span>
+                                        }
                                     </button>
                                 </div>}
                             </div>

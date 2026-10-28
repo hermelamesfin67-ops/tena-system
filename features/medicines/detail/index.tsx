@@ -12,7 +12,6 @@ import MedicineTranslationForm from "./medicine-translation";
 import { categoryStyles } from "@/features/categories";
 
 const breadcrumb = [{ name: "Medicines", href: routes.medicines }, { name: "Medicine Details" }];
-
 function MedicinesDetails({ id }: { id: string }) {
 
     const [addLanguage, setAddLanguage] = useState<AddLanguage[]>([]);
