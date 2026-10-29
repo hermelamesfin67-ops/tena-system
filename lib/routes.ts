@@ -16,4 +16,6 @@ export const routes = {
   categoryDetails: (id: string) => `/categories/${id}`,
   draftMedicineTranslations: "/draft-medicine-translation",
   draftMedicineTranslationDetail: (id: string) => `/draft-medicine-translation/${id}`,
+  rejectedMedicineTranslations: "/rejected-medicine-translation",
+  rejectedMedicineTranslationDetail: (id: string) => `/rejected-medicine-translation/${id}`,
 };

@@ -1,5 +1,5 @@
 
-import DraftMedicineTranslationDetail from "@/features/draft-medicine-translation/detail";
+import DraftMedicineTranslationDetail from "@/features/medicines/draft-medicine-translation/detail";
 import { Suspense } from "react";
 
 type Props = {

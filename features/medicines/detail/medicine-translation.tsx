@@ -113,7 +113,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
     };
 
     return (
-        <div className="col-span-2 w-full">
+        <div className="col-span-full md:col-span-3 w-full">
             <Formik<TranslationFormValues>
                 initialValues={{
                     translations: initialTranslations,

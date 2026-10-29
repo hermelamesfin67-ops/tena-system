@@ -1,4 +1,4 @@
-import DraftMedicineTranslations from '@/features/draft-medicine-translation'
+import DraftMedicineTranslations from '@/features/medicines/draft-medicine-translation'
 
 export default function page() {
   return (

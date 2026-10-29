@@ -71,11 +71,25 @@ type MedicineInteractionTranslation = {
 type MedicineInteraction = {
   id: string;
   drug_a: string;
+  drug_a_name: string;
   drug_b: string;
+  drug_b_name: string;
   severity: string;
   sources: string[];
   review_status: string;
   translations: MedicineInteractionTranslation[];
+  created_at: Date;
+  updated_at: Date;
+};
+
+type MedicineWarning = {
+  id: string;
+  drug: string;
+  warning_type: string;
+  sources: [];
+  review_status: string;
+  rejection_reason: string;
+  translations: [];
   created_at: Date;
   updated_at: Date;
 };
