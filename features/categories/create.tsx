@@ -27,7 +27,7 @@ export function CategoryForm({ id, setOpen, setIsEditOpen }: Props) {
         try {
             await postMutation.mutateAsync({
                 url: id ? `categories/${id}/` : `categories/create/`,
-                method: id ? "PUT" : "POST",
+                method: id ? "PATCH" : "POST",
                 body: {
                     slug: values.slug,
                 },

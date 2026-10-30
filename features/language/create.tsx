@@ -32,7 +32,7 @@ export function LanguageForm({ language, setOpen, setIsEditOpen }: Props) {
         try {
             await postMutation.mutateAsync({
                 url: language?.id ? `languages/${language?.id}/` : `languages/create/`,
-                method: language?.id ? "PUT" : "POST",
+                method: language?.id ? "PATCH" : "POST",
                 body: {
                     code: values.code,
                     name: values.name,

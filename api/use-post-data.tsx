@@ -58,15 +58,17 @@ const useDynamicMutation = ({
       if (variables.onError) {
         variables.onError(error);
       }
+
       const errorMessage =
         (error as any)?.response?.data?.detail ||
         (error as any)?.response?.data?.error;
+      const non_field_errors = (error as any)?.response?.data?.non_field_errors?.length ? (error as any)?.response?.data?.non_field_errors?.join(", ") : ""
       const isString = typeof errorMessage === "string";
       const errors = (error as any)?.response?.data?.error?.message;
       toast.error(
         isString
           ? errorMessage
-          : errors || "We couldn't complete your request. Please try again.",
+          : errors || non_field_errors || "We couldn't complete your request. Please try again.",
       );
     },
     retry: false,

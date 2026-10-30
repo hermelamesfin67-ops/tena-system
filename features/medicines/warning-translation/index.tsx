@@ -9,11 +9,16 @@ import { formatDate } from '@/lib/date-time'
 import { routes } from '@/lib/routes'
 import { useState } from 'react'
 import MedicineWarningTranslationForm from './warning-translation'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { PenLine } from 'lucide-react'
+import { MedicineWarningForm } from '../detail/warning-form'
+import { Button } from '@/components/ui/button'
 
 type Props = {
     id: string
 }
 function MedicineWarningDetails({ id }: Props) {
+    const [isEditOpen, setIsEditOpen] = useState(false);
     const [addLanguage, setAddLanguage] = useState<AddLanguage[]>([]);
 
     const medicineWarningTranslationData = useFetchData(
@@ -59,6 +64,20 @@ function MedicineWarningDetails({ id }: Props) {
                     title="Medicine Warning"
                     description="Information about the medicine warning."
                 />
+                <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                    <DialogTrigger render={<div className='flex justify-end'>
+                        <Button className={"max-w-40 w-full"}>
+                            <PenLine /> Edit Warning
+                        </Button></div>} />
+                    <DialogContent className="sm:max-w-lg">
+                        <MedicineWarningForm
+                            id={warning?.id}
+                            warningType={warning?.warning_type}
+                            medicineId={warning?.drug}
+                            setIsEditOpen={setIsEditOpen}
+                        />
+                    </DialogContent>
+                </Dialog>
                 <div className='flex flex-col gap-5'>
                     <TitleValueCard title="Warning Type" value={warning?.warning_type} />
                     <TitleValueCard title="Last Updated At" value={formatDate(warning?.updated_at)} />

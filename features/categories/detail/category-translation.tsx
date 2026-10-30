@@ -88,7 +88,7 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
                 url: isUpdate
                     ? `categories/translations/update/${values.id}/`
                     : "categories/translations/create/",
-                method: isUpdate ? "PUT" : "POST",
+                method: isUpdate ? "PATCH" : "POST",
                 body: {
                     category: categoryId,
                     language: values?.language?.id,
