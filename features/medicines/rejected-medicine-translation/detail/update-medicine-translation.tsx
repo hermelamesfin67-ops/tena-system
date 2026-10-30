@@ -72,8 +72,6 @@ function MedicineTranslationUpdateForm({ translation }: Props) {
                 onSubmit={(val) => handleLanguageTranslation(val)}
             >
                 {({ }) => {
-
-
                     return (
                         <Form className="flex flex-col gap-5">
                             <div className="flex flex-col gap-5 border border-black/10 rounded-md p-3">
@@ -158,7 +156,9 @@ function MedicineTranslationUpdateForm({ translation }: Props) {
 
                                 <DialogFooter className="sm:justify-end">
                                     <Button onClick={() => router.back()} variant={"outline"}>Back</Button>
-                                    <Button type="submit">Update</Button>
+                                    <Button type="submit" disabled={postMutation.isPending}>
+                                        {postMutation.isPending ? "Loading.." : "Update"}
+                                    </Button>
                                 </DialogFooter>
                             </div>
                         </Form>

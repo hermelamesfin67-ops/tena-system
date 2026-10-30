@@ -4,61 +4,34 @@ import { useFetchData } from "@/api/use-fetch-data";
 import Loader from "@/components/loader";
 import PageHeader from "@/components/page-header";
 import TitleValueCard from "@/components/title-value-card";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { routes } from "@/lib/routes";
-import { useState } from "react";
-import { RejectRequest } from "./reject";
-import { PublishRequest } from "./publish";
-import { formatDate } from "@/lib/date-time";
+import MedicineWarningTranslationUpdateForm from "./update-warning-translation";
 
-const breadcrumb = [{ name: "Rejected Medicine Warning Translations", href: routes.draftWarningTranslations }, { name: "Details" }];
+const breadcrumb = [{ name: "Rejected Medicine Warning Translations", href: routes.rejectedWarningTranslations }, { name: "Details" }];
 
 function RejectedMedicineWarningTranslationDetail({ id }: { id: string }) {
-    const [openRejectDialog, setOpenRejectDialog] = useState(false);
-    const [openPublishDialog, setOpenPublishDialog] = useState(false);
 
-    const draftData = useFetchData(
+    const rejectedData = useFetchData(
         [queryKeys.getAllMedicineDraftWarning, id],
-        `drug-warning-translation/rejected/${id}/`,
+        `drug-warning-translation/rejects/${id}/`,
     )
-    const draftMedicine: MedicineWarningTranslation = draftData.data
+    const rejectedMedicineWarning: MedicineWarningTranslation = rejectedData.data
 
-    if (draftData?.isFetching) return <Loader />
+    if (rejectedData?.isFetching) return <Loader />
 
     return (
         <div className='flex flex-col gap-3 w-full'>
             <PageHeader breadcrumb={breadcrumb} />
 
             <div className="grid gap-4 border-t border-slate-100 pt-6">
-                <TitleValueCard title="Title" value={draftMedicine?.title} />
-                <TitleValueCard title="Language" value={draftMedicine?.language_code?.toUpperCase()} />
-                <TitleValueCard title="Description" value={draftMedicine?.description} />
-                <TitleValueCard title="Recommended Action" value={draftMedicine?.recommended_action} />
-                {draftMedicine?.rejection_reason && <TitleValueCard title="rejection_reason" value={draftMedicine?.rejection_reason} />}
-                <TitleValueCard title="Review Status" value={draftMedicine?.review_status} />
-                <TitleValueCard title="Updated At" value={formatDate(draftMedicine?.updated_at)} />
+                <TitleValueCard
+                    title="Rejection Reason"
+                    value={rejectedMedicineWarning?.rejection_reason}
+                    className="border border-red-500 rounded-md p-2"
+                />
 
-                {draftMedicine?.review_status?.toUpperCase() === "DRAFT" &&
-                    <DialogFooter className="sm:justify-end">
-                        <Dialog open={openRejectDialog} onOpenChange={setOpenRejectDialog}>
-                            <DialogTrigger render={<div className='flex justify-end'>
-                                <Button variant={"destructive"}>Reject</Button>
-                            </div>} />
-                            <DialogContent className="sm:max-w-lg">
-                                <RejectRequest id={id} setOpenRejectDialog={setOpenRejectDialog} />
-                            </DialogContent>
-                        </Dialog>
-                        <Dialog open={openPublishDialog} onOpenChange={setOpenPublishDialog}>
-                            <DialogTrigger render={<div className='flex justify-end'>
-                                <Button>Publish</Button>
-                            </div>} />
-                            <DialogContent className="sm:max-w-lg">
-                                <PublishRequest id={id} setOpenPublishDialog={setOpenPublishDialog} />
-                            </DialogContent>
-                        </Dialog>
-                    </DialogFooter>
-                }
+                <MedicineWarningTranslationUpdateForm translation={rejectedMedicineWarning} />
+
             </div>
         </div>
     )
