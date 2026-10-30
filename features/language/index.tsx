@@ -1,6 +1,6 @@
 "use client"
 import PageHeader from "@/components/page-header"
-import { PenLine, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -14,11 +14,11 @@ import {
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
+// import {
+//     Tooltip,
+//     TooltipContent,
+//     TooltipTrigger,
+// } from "@/components/ui/tooltip"
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useFetchData } from "@/api/use-fetch-data";
@@ -35,8 +35,8 @@ export const languageStyles = [
 const breadcrumb = [{ name: "Languages" }];
 function Languages() {
     const [open, setOpen] = useState(false);
-    const [isEditOpen, setIsEditOpen] = useState(false);
-    const [editingLanguageId, setEditingLanguageId] = useState("");
+    // const [isEditOpen, setIsEditOpen] = useState(false);
+    // const [editingLanguageId, setEditingLanguageId] = useState("");
 
     const languageData = useFetchData(
         [queryKeys.getAllLanguages],
@@ -87,7 +87,7 @@ function Languages() {
                                                         {language?.code}
                                                     </div>
                                                 </TableCell>
-                                                <TableCell className='flex items-center gap-3'>
+                                                {/* <TableCell className='flex items-center gap-3'>
                                                     <Tooltip>
                                                         <TooltipTrigger className={"cursor-pointer"} delay={100}>
                                                             <Dialog
@@ -111,7 +111,7 @@ function Languages() {
                                                             <p className='text-xs'>Edit</p>
                                                         </TooltipContent>
                                                     </Tooltip>
-                                                </TableCell>
+                                                </TableCell> */}
                                             </TableRow>
                                         )
                                     })

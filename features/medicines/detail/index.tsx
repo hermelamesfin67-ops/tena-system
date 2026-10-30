@@ -7,7 +7,6 @@ import PageHeader from "@/components/page-header";
 import TitleValueCard from "@/components/title-value-card";
 import { routes } from "@/lib/routes";
 import { useState } from "react";
-import { AddLanguage } from "./add-language";
 import MedicineTranslationForm from "./medicine-translation";
 import { categoryStyles } from "@/features/categories";
 import MedicineWarning from "./warning";

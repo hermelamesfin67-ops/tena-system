@@ -30,6 +30,7 @@ type Category = {
 
 type MedicineTranslation = {
   id: string;
+  drug?: string;
   language: Language;
   language_code: string;
   display_name: string;
@@ -39,8 +40,24 @@ type MedicineTranslation = {
   when_to_use: string;
   side_effects: string;
   storage_instructions: string;
+  rejection_reason: string;
   updated_at: Date;
   review_status: "draft" | "reviewed" | "published";
+};
+
+type MedicineWarningTranslation = {
+  id: string;
+  warning: string;
+  language: string;
+  language_code: string;
+  title: string;
+  description: string;
+  recommended_action: string;
+  review_status: string;
+  rejection_reason: string;
+  reviewed_by: string;
+  reviewed_at: string;
+  updated_at: Date;
 };
 
 type MedicineStatus = "Published" | "In review" | "Draft";
@@ -89,7 +106,13 @@ type MedicineWarning = {
   sources: [];
   review_status: string;
   rejection_reason: string;
-  translations: [];
+  translations: MedicineWarningTranslation[];
   created_at: Date;
   updated_at: Date;
+};
+
+type AddLanguage = {
+  native_name: string;
+  language_code: string;
+  id: string;
 };

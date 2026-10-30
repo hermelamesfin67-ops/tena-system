@@ -13,21 +13,12 @@ import { useState } from "react";
 import { queryKeys } from "@/api/query-keys";
 import ModalHeader from "@/components/modal-header";
 import Loader from "@/components/loader";
-import { AddLanguage, AddLanguageForm } from "@/features/medicines/detail/add-language";
+import { AddLanguageForm } from "@/components/add-language";
 import { singleTranslationSchema } from "@/validations/category.schema";
 
 type TranslationFormValues = {
     translations: CategoryTranslation[];
 };
-
-// const createEmptyTranslation = (language: Language): CategoryTranslation => ({
-//     id: "",
-//     category: "",
-//     language: language,
-//     language_code: language?.code,
-//     name: "",
-//     description: ""
-// });
 
 type Props = {
     categoryId: string

@@ -30,8 +30,8 @@ export function PharmacistForm({ pharmacist, setOpen, setIsEditOpen }: Props) {
     const createPharmacist = async (values: PharmacistSchemaType) => {
         try {
             await postMutation.mutateAsync({
-                url: pharmacist?.id ? `pharmacist/${pharmacist?.id}/` : `create/pharmacist/`,
-                method: pharmacist?.id ? "PUT" : "POST",
+                url: pharmacist?.id ? `pharmacist/${pharmacist?.id}/` : `pharmacist/`,
+                method: pharmacist?.id ? "PATCH" : "POST",
                 body: {
                     username: values.username,
                     email: values.email,

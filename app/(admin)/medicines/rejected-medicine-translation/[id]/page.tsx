@@ -1,5 +1,5 @@
 
-import DraftMedicineTranslationDetail from "@/features/medicines/draft-medicine-translation/detail";
+import RejectedMedicineTranslationDetail from "@/features/medicines/rejected-medicine-translation/detail";
 import { Suspense } from "react";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 async function DraftMedicineTranslationContent({ params }: Props) {
     const { id } = await params;
 
-    return <DraftMedicineTranslationDetail id={id} />;
+    return <RejectedMedicineTranslationDetail id={id} />;
 }
 
 export default function Page({ params }: Props) {

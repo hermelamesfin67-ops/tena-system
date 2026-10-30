@@ -19,7 +19,7 @@ export function PublishRequest({ id, setOpenPublishDialog }: Props) {
     const publishRequest = async () => {
         try {
             await postMutation.mutateAsync({
-                url: `drugs/translations/${id}/publish/`,
+                url: `drugs/warnings/translations/${id}/publish/`,
                 method: "POST",
                 body: {},
                 onSuccess: async () => {
@@ -39,7 +39,7 @@ export function PublishRequest({ id, setOpenPublishDialog }: Props) {
         onSubmit={publishRequest}>
         <Form className="space-y-5">
             <ModalHeader
-                title='Publish Medicine Translation'
+                title='Publish Medicine Warning Translation'
                 description='Are you sure you want to publish this translation? Once published, the changes will be applied immediately to the system.'
                 icon={<Pill />}
             />

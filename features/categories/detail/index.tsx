@@ -7,7 +7,6 @@ import PageHeader from "@/components/page-header";
 import TitleValueCard from "@/components/title-value-card";
 import { routes } from "@/lib/routes";
 import { useState } from "react";
-import { AddLanguage } from "@/features/medicines/detail/add-language";
 import CategoryTranslationForm from "./category-translation";
 
 const breadcrumb = [{ name: "Categories", href: routes.category }, { name: "Category Details" }];

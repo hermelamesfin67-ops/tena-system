@@ -1,7 +1,7 @@
-
 'use client';
 import {
     Activity,
+    BookAlert,
     Boxes,
     Globe2,
     LayoutDashboard,
@@ -22,7 +22,14 @@ const nav = [
             { label: 'Rejected Translations', href: routes.rejectedMedicineTranslations },
         ]
     },
-    { label: 'Categories', icon: Boxes, href: routes.category },
+    {
+        label: 'Drug Warning', icon: BookAlert, href: "#",
+        subMenu: [
+            { label: 'Draft Translations', href: routes.draftWarningTranslations },
+            { label: 'Rejected Translations', href: routes.rejectedWarningTranslations },
+        ]
+    },
+    { label: 'Categories', icon: Boxes, href: routes.category, },
     { label: 'Languages', icon: Globe2, href: routes.languages },
     { label: 'Pharmacist', icon: Users, href: routes.pharmacist },
 ];
@@ -108,8 +115,7 @@ const NavLinks = ({
                                         label: subLabel,
                                         href: subHref,
                                     }) => {
-                                        const isSubActive =
-                                            pathName === subHref;
+                                        const isSubActive = pathName?.includes(subHref);
 
                                         return (
                                             <Link

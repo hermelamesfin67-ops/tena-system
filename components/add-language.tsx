@@ -8,17 +8,6 @@ import { queryKeys } from '@/api/query-keys';
 import Loader from '@/components/loader';
 import { toast } from 'sonner';
 
-export type LanguageValues = {
-    code: string;
-    name: string;
-    native_name: string;
-    is_active: boolean
-};
-export type AddLanguage = {
-    native_name: string,
-    language_code: string,
-    id: string,
-}
 type Props = {
     medicineLanguages: AddLanguage[]
     setOpen: (arg: boolean) => void
@@ -34,15 +23,7 @@ export function AddLanguageForm({ medicineLanguages, setOpen, setAddLanguage }: 
     const initialValues = { languages: medicineLanguages }
     if (languagesData.isFetching) return <Loader />
 
-    return <Formik initialValues={initialValues} validationSchema={""} onSubmit={(val) => {
-        if (val.languages?.length) {
-            setOpen(false)
-            setAddLanguage(val.languages)
-        } else {
-            toast.warning("No changes applied!");
-            return;
-        }
-    }}>
+    return <Formik initialValues={initialValues} validationSchema={""} onSubmit={() => { }}>
         {({ setFieldValue, values }) => (
             <Form className="space-y-5">
                 <ModalHeader
@@ -88,7 +69,16 @@ export function AddLanguageForm({ medicineLanguages, setOpen, setAddLanguage }: 
                 </div>
 
                 <div className="flex justify-end">
-                    <Button type="submit">Add language</Button>
+                    <Button onClick={() => {
+                        if (values.languages?.length) {
+                            setOpen(false)
+                            setAddLanguage(values.languages)
+                        } else {
+                            toast.warning("No changes applied!");
+                            return;
+                        }
+                    }
+                    }>Add language</Button>
                 </div>
             </Form>
         )}

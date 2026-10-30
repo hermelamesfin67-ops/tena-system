@@ -7,7 +7,7 @@ import {
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { singleTranslationSchema } from "@/validations/medicine.schema";
 import * as Yup from "yup";
-import { AddLanguage, AddLanguageForm } from "./add-language";
+import { AddLanguageForm } from "../../../components/add-language";
 import useDynamicMutation from "@/api/use-post-data";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -73,6 +73,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                     when_to_use: "",
                     side_effects: "",
                     storage_instructions: "",
+                    rejection_reason: "",
                     updated_at: new Date(),
                     review_status: "draft",
                 };
@@ -216,6 +217,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                                     <Dialog open={open} onOpenChange={setOpen}>
                                         <DialogTrigger render={<div>
                                             <button
+                                                type="button"
                                                 className={"capitalize shrink-0 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-medium border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}
                                             >
                                                 <Plus size={17} /> Add Language
@@ -246,9 +248,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                                                 ],
                                             ] as const
                                         ).map(([field, label]) => {
-                                            const isLongText =
-                                                field !== "display_name" &&
-                                                field !== "short_description";
+                                            const isLongText = field !== "display_name"
 
                                             return (
                                                 <div key={field} className="flex flex-col gap-1.5">

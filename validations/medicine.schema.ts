@@ -27,8 +27,22 @@ export const singleTranslationSchema = Yup.object({
     .required("Review status is required"),
 });
 
+export const singleWarningTranslationSchema = Yup.object({
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().required("Description is required"),
+  recommended_action: Yup.string().required("This field is required"),
+  review_status: Yup.string()
+    .oneOf(["draft", "reviewed", "published"])
+    .required("Review status is required"),
+});
+
 export type MedicineSchemaType = Yup.InferType<typeof medicineSchema>;
-export type SingleTranslationSchemaType = Yup.InferType<typeof singleTranslationSchema>;
+export type SingleTranslationSchemaType = Yup.InferType<
+  typeof singleTranslationSchema
+>;
+export type SingleWarningTranslationSchemaType = Yup.InferType<
+  typeof singleWarningTranslationSchema
+>;
 export type MedicineTranslationSchemaType = Yup.InferType<
   typeof medicineTranslationSchema
 >;

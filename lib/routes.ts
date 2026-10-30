@@ -14,8 +14,20 @@ export const routes = {
   medicineDetails: (id: string) => `/medicines/${id}`,
   category: "/categories",
   categoryDetails: (id: string) => `/categories/${id}`,
-  draftMedicineTranslations: "/draft-medicine-translation",
-  draftMedicineTranslationDetail: (id: string) => `/draft-medicine-translation/${id}`,
-  rejectedMedicineTranslations: "/rejected-medicine-translation",
-  rejectedMedicineTranslationDetail: (id: string) => `/rejected-medicine-translation/${id}`,
+  draftMedicineTranslations: "/medicines/draft-medicine-translation",
+  draftMedicineTranslationDetail: (id: string) =>
+    `/medicines/draft-medicine-translation/${id}`,
+  rejectedMedicineTranslations: "/medicines/rejected-medicine-translation",
+  rejectedMedicineTranslationDetail: (id: string) =>
+    `/medicines/rejected-medicine-translation/${id}`,
+
+  drugWarning: "/drug-warning",
+  drugWarningTranslation: (id: string) => `/warning-translation/${id}`,
+  draftWarningTranslations: "/warning-translation/draft-warning-translation",
+  draftWarningTranslationDetail: (id: string) =>
+    `/warning-translation/draft-warning-translation/${id}`,
+  rejectedWarningTranslations:
+    "/warning-translation/rejected-warning-translation",
+  rejectedWarningTranslationDetail: (id: string) =>
+    `/warning-translation/rejected-warning-translation/${id}`,
 };

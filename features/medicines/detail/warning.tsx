@@ -1,8 +1,12 @@
+"use client"
 import { queryKeys } from '@/api/query-keys'
 import { useFetchData } from '@/api/use-fetch-data'
 import Loader from '@/components/loader'
 import ModalHeader from '@/components/modal-header'
 import TitleValueCard from '@/components/title-value-card'
+import { Button } from '@/components/ui/button'
+import { routes } from '@/lib/routes'
+import Link from 'next/link'
 
 type Props = {
     id: string
@@ -25,8 +29,10 @@ function MedicineWarning({ id }: Props) {
                 {warnings?.length ? warnings?.map((warning, index) => (
                     <div key={index} className="grid xl:grid-cols-2 gap-3 border-b pb-2">
                         <TitleValueCard title="Warning Type" value={warning?.warning_type} />
-                        <TitleValueCard title="Review Status" value={warning?.review_status} />
                         {warning?.rejection_reason && <TitleValueCard title="Rejection Reason" value={warning?.rejection_reason} />}
+                        <Link href={routes.drugWarningTranslation(warning?.id)}>
+                            <Button variant={"outline"} className={"rounded-full text-xs w-fit"}>View Translations</Button>
+                        </Link>
                     </div>
                 )) : <div className="font-semibold text-slate-600">
                     No medicine waring found
