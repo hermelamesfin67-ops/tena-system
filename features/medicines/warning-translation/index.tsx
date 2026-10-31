@@ -83,19 +83,13 @@ function MedicineWarningDetails({ id }: Props) {
                     <TitleValueCard title="Last Updated At" value={formatDate(warning?.updated_at)} />
                     {warning?.rejection_reason && <TitleValueCard title="Rejection Reason" value={warning?.rejection_reason} />}
 
-                    {warning?.translations?.length ?
-
-                        < MedicineWarningTranslationForm
-                            medicineId={id}
-                            languageFetching={languagesData.isFetching}
-                            translations={warning?.translations}
-                            mergedLanguages={mergedLanguages}
-                            setAddLanguage={setAddLanguage}
-                        />
-
-                        : <div className="font-semibold text-slate-600">
-                            No medicine waring translation found
-                        </div>}
+                    < MedicineWarningTranslationForm
+                        medicineId={id}
+                        languageFetching={languagesData.isFetching}
+                        translations={warning?.translations}
+                        mergedLanguages={mergedLanguages}
+                        setAddLanguage={setAddLanguage}
+                    />
                 </div>
             </div>
         </div>

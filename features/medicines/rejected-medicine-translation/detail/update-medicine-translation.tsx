@@ -2,12 +2,11 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import useDynamicMutation from "@/api/use-post-data";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/api/query-keys";
 import ModalHeader from "@/components/modal-header";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { hasObjectsDifferentValues } from "@/lib/utils";
 
 type Props = {
     translation: MedicineTranslation
@@ -15,14 +14,13 @@ type Props = {
 
 function MedicineTranslationUpdateForm({ translation }: Props) {
     const router = useRouter()
-    const queryClient = useQueryClient()
     const postMutation = useDynamicMutation({ type: "Json" })
 
     const initialTranslations: MedicineTranslation = {
         id: translation?.id,
         language: {
-            id: translation.id,
-            code: translation.language_code,
+            id: translation?.language as unknown as string,
+            code: translation?.language_code,
         } as Language,
         language_code: translation?.language_code,
         display_name: translation?.display_name,
@@ -54,9 +52,7 @@ function MedicineTranslationUpdateForm({ translation }: Props) {
                     storage_instructions: values?.storage_instructions
                 },
                 onSuccess: () => {
-                    queryClient.invalidateQueries({
-                        queryKey: [queryKeys.getAllMedicine],
-                    })
+                    router.back()
                     toast.success("Translation submitted successfully!");
                 },
             });
@@ -69,7 +65,13 @@ function MedicineTranslationUpdateForm({ translation }: Props) {
         <div className="col-span-full md:col-span-3 w-full">
             <Formik
                 initialValues={initialTranslations}
-                onSubmit={(val) => handleLanguageTranslation(val)}
+                onSubmit={(val) => {
+                    if (!hasObjectsDifferentValues(val, initialTranslations)) {
+                        toast.warning("No changes applied!");
+                        return;
+                    }
+                    handleLanguageTranslation(val)
+                }}
             >
                 {({ }) => {
                     return (

@@ -5,6 +5,7 @@ export const queryKeys = {
   getAllDrugInteractions: "getAllDrugInteractionsApi",
   getAllPharmacist: "getAllPharmacistApi",
   getAllMedicineDrat: "getAllMedicineDratApi",
+  getAllMedicineRejected: "getAllMedicineRejectedApi",
   getAllMedicineWarning: "getAllMedicineWarningApi",
   getAllMedicineDraftWarning: "getAllMedicineDraftWarningApi",
   getAllMedicineRejectedWarning: "getAllMedicineRejectedWarningApi",
