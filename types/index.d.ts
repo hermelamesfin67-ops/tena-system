@@ -74,8 +74,9 @@ type Medicine = {
 };
 
 type MedicineInteractionTranslation = {
-  id: 4;
-  language: 2;
+  id: string;
+  interaction: string;
+  language: string;
   language_code: string;
   explanation: string;
   recommended_action: string;

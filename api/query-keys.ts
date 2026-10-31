@@ -10,4 +10,6 @@ export const queryKeys = {
   getAllMedicineDraftWarning: "getAllMedicineDraftWarningApi",
   getAllMedicineRejectedWarning: "getAllMedicineRejectedWarningApi",
   getAllMedicineInteractions: "getAllMedicineInteractionsApi",
+  getAllMedicineDraftInteraction: "getAllMedicineDraftInteractionApi",
+  getAllMedicineRejectedInteraction: "getAllMedicineRejectedInteractionApi",
 };

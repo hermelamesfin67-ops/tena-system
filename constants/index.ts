@@ -58,6 +58,12 @@ export const drugWarnings = [
   { label: "Other", value: "other" },
 ];
 
+export const drugSeverity = [
+  { label: "Minor", value: "minor" },
+  { label: "Moderate", value: "moderate" },
+  { label: "Major", value: "major" },
+];
+
 export const warningBGstyle: Record<
   string,
   {

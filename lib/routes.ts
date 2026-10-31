@@ -30,4 +30,16 @@ export const routes = {
     "/warning-translation/rejected-warning-translation",
   rejectedWarningTranslationDetail: (id: string) =>
     `/warning-translation/rejected-warning-translation/${id}`,
+
+  drugInteraction: "/drug-interaction",
+  drugInteractionTranslation: (id: string, medicineId: string) =>
+    `/interaction-translation/${id}/${medicineId}`,
+  draftInteractionTranslations:
+    "/interaction-translation/draft-interaction-translation",
+  draftInteractionTranslationDetail: (id: string) =>
+    `/interaction-translation/draft-interaction-translation/${id}`,
+  rejectedInteractionTranslations:
+    "/interaction-translation/rejected-interaction-translation",
+  rejectedInteractionTranslationDetail: (id: string) =>
+    `/interaction-translation/rejected-interaction-translation/${id}`,
 };

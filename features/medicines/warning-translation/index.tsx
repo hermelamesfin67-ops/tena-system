@@ -10,9 +10,11 @@ import { routes } from '@/lib/routes'
 import { useState } from 'react'
 import MedicineWarningTranslationForm from './warning-translation'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { PenLine } from 'lucide-react'
+import { PenLine, TriangleAlert } from 'lucide-react'
 import { MedicineWarningForm } from '../detail/warning-form'
 import { Button } from '@/components/ui/button'
+import { cn } from 'cn'
+import { warningBGstyle } from '@/constants'
 
 type Props = {
     id: string
@@ -26,6 +28,7 @@ function MedicineWarningDetails({ id }: Props) {
         `drug-warnings/${id}/`,
     )
     const warning: MedicineWarning = medicineWarningTranslationData.data
+    const color = warningBGstyle[warning?.warning_type]
 
     const languagesData = useFetchData(
         [queryKeys.getAllLanguages],
@@ -59,27 +62,38 @@ function MedicineWarningDetails({ id }: Props) {
     return (
         <div className='flex flex-col gap-3 w-full'>
             <PageHeader breadcrumb={breadcrumb} />
+
             <div className="flex flex-col gap-5 border border-black/10 rounded-md p-3">
                 <ModalHeader
                     title="Medicine Warning"
                     description="Information about the medicine warning."
                 />
-                <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-                    <DialogTrigger render={<div className='flex justify-end'>
-                        <Button className={"max-w-40 w-full"}>
-                            <PenLine /> Edit Warning
-                        </Button></div>} />
-                    <DialogContent className="sm:max-w-lg">
-                        <MedicineWarningForm
-                            id={warning?.id}
-                            warningType={warning?.warning_type}
-                            medicineId={warning?.drug}
-                            setIsEditOpen={setIsEditOpen}
-                        />
-                    </DialogContent>
-                </Dialog>
                 <div className='flex flex-col gap-5'>
-                    <TitleValueCard title="Warning Type" value={warning?.warning_type} />
+                    <div className={cn("flex flex-col sm:flex-row justify-between sm:items-center w-full", color.background)}>
+                        <div className='flex items-center gap-3 p-2 rounded-md'>
+                            <div className={cn('p-3 rounded-full', color.iconBG, color?.text)}>
+                                <TriangleAlert size={36} />
+                            </div>
+                            <div>
+                                <span className={cn('uppercase text-xs', color?.text)}>{warning?.warning_type}</span>
+                            </div>
+                        </div>
+
+                        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                            <DialogTrigger render={<div className='mr-3'>
+                                <Button className={"max-w-40 w-full"}>
+                                    <PenLine /> Edit Warning
+                                </Button></div>} />
+                            <DialogContent className="sm:max-w-lg">
+                                <MedicineWarningForm
+                                    id={warning?.id}
+                                    warningType={warning?.warning_type}
+                                    medicineId={warning?.drug}
+                                    setIsEditOpen={setIsEditOpen}
+                                />
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                     <TitleValueCard title="Last Updated At" value={formatDate(warning?.updated_at)} />
                     {warning?.rejection_reason && <TitleValueCard title="Rejection Reason" value={warning?.rejection_reason} />}
 

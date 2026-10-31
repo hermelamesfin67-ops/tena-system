@@ -29,6 +29,13 @@ const nav = [
             { label: 'Rejected Translations', href: routes.rejectedWarningTranslations },
         ]
     },
+    {
+        label: 'Drug Interaction', icon: BookAlert, href: "#",
+        subMenu: [
+            { label: 'Draft Translations', href: routes.draftInteractionTranslations },
+            { label: 'Rejected Translations', href: routes.rejectedInteractionTranslations },
+        ]
+    },
     { label: 'Categories', icon: Boxes, href: routes.category, },
     { label: 'Languages', icon: Globe2, href: routes.languages },
     { label: 'Pharmacist', icon: Users, href: routes.pharmacist },

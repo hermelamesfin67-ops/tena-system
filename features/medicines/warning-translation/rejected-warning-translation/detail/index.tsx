@@ -12,7 +12,7 @@ const breadcrumb = [{ name: "Rejected Medicine Warning Translations", href: rout
 function RejectedMedicineWarningTranslationDetail({ id }: { id: string }) {
 
     const rejectedData = useFetchData(
-        [queryKeys.getAllMedicineDraftWarning, id],
+        [queryKeys.getAllMedicineRejectedWarning, id],
         `drug-warning-translation/rejects/${id}/`,
     )
     const rejectedMedicineWarning: MedicineWarningTranslation = rejectedData.data
