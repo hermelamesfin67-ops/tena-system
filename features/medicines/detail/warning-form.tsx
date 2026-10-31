@@ -23,7 +23,6 @@ type Props = {
     setIsEditOpen?: (arg: boolean) => void
 }
 export function MedicineWarningForm({ id, medicineId, warningType, setOpen, setIsEditOpen }: Props) {
-    // const [warningType, setWarningType] = useState("")
     const queryClient = useQueryClient()
     const postMutation = useDynamicMutation({ type: "Json" })
     const initialValues = { warning_type: warningType || '' }

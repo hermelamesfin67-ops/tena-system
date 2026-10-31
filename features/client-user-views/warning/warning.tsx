@@ -3,7 +3,6 @@ import { queryKeys } from '@/api/query-keys'
 import { useFetchData } from '@/api/use-fetch-data'
 import Loader from '@/components/loader'
 import ModalHeader from '@/components/modal-header'
-import TitleValueCard from '@/components/title-value-card'
 import WarningTranslations from './warning-translations'
 
 type Props = {
@@ -25,10 +24,7 @@ function MedicineWarning({ id }: Props) {
             />
             <div className='flex flex-col gap-5'>
                 {warnings?.length ? warnings?.map((warning, index) => (
-                    <div key={index} className="grid xl:grid-cols-2 gap-3 border-b pb-2">
-                        <TitleValueCard title="Warning Type" value={warning?.warning_type} />
-                        {warning?.rejection_reason && <TitleValueCard title="Rejection Reason" value={warning?.rejection_reason} />}
-
+                    <div key={index}>
                         <WarningTranslations warning={warning}/>
                     </div>
                 )) : <div className="font-semibold text-slate-600">

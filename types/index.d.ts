@@ -116,3 +116,5 @@ type AddLanguage = {
   language_code: string;
   id: string;
 };
+
+type medicineWarning = "contraindication" |"precaution" |"allergy"|"pregnancy" |"breastfeeding" |"other"

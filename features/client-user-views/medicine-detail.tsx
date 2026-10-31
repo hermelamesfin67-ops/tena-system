@@ -137,7 +137,6 @@ export default function MedicineDetails({ id }: Props) {
                     </div>
                 </header>
 
-                <MedicineWarning id={id} />
 
                 <div className="grid gap-4 md:grid-cols-2">
                     {sections?.map((section) => {
@@ -172,6 +171,10 @@ export default function MedicineDetails({ id }: Props) {
                         );
                     })}
                 </div>
+
+                {/* Medicine Warning */}
+                <MedicineWarning id={id} />
+
 
             </div>
 
