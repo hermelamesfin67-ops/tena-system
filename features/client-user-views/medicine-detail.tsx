@@ -7,6 +7,7 @@ import Loader from "@/components/loader";
 import { useMemo, useState } from "react";
 import { sections } from "@/constants";
 import TitleValueCard from "@/components/title-value-card";
+import MedicineWarning from "./warning/warning";
 
 type Props = {
     id: string
@@ -136,16 +137,7 @@ export default function MedicineDetails({ id }: Props) {
                     </div>
                 </header>
 
-                {/* {translation.warnings && (
-                    <aside className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-                        <h2 className="font-semibold text-amber-950">
-                            Important safety information
-                        </h2>
-                        <p className="mt-2 whitespace-pre-line text-sm leading-6 text-amber-900">
-                            {translation.warnings}
-                        </p>
-                    </aside>
-                )} */}
+                <MedicineWarning id={id} />
 
                 <div className="grid gap-4 md:grid-cols-2">
                     {sections?.map((section) => {

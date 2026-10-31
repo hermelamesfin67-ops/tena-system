@@ -31,6 +31,24 @@ export const sections = [
   },
 ] as const;
 
+export const warningSections = [
+  {
+    title: "Title",
+    field: "title",
+    icon: "✚",
+  },
+  {
+    title: "Description",
+    field: "description",
+    icon: "◷",
+  },
+  {
+    title: "Recommended Action",
+    field: "recommended_action",
+    icon: "↗",
+  },
+] as const;
+
 export const drugWarnings = [
   { label: "Contraindication", value: "contraindication" },
   { label: "Precaution", value: "precaution" },

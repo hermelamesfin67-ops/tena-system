@@ -1,6 +1,6 @@
 
 import { Suspense } from "react";
-import MedicineDetails from "@/features/medicine-detail";
+import MedicineDetails from "@/features/client-user-views/medicine-detail";
 
 type Props = {
     params: Promise<{ id: string }>;
