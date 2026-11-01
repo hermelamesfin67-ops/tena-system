@@ -4,8 +4,6 @@ import {
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import useDynamicMutation from "@/api/use-post-data";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/api/query-keys";
 import ModalHeader from "@/components/modal-header";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -16,7 +14,6 @@ type Props = {
 
 function MedicineInteractionTranslationUpdateForm({ translation }: Props) {
     const router = useRouter()
-    const queryClient = useQueryClient()
     const postMutation = useDynamicMutation({ type: "Json" })
 
     const initialTranslations: MedicineInteractionTranslation = {
@@ -44,9 +41,7 @@ function MedicineInteractionTranslationUpdateForm({ translation }: Props) {
                     recommended_action: values?.recommended_action,
                 },
                 onSuccess: () => {
-                    queryClient.invalidateQueries({
-                        queryKey: [queryKeys.getAllMedicineInteractions],
-                    })
+                    router.back()
                     toast.success("Translation submitted successfully!");
                 },
             });

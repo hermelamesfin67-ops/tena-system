@@ -20,7 +20,7 @@ function DraftMedicineInteractionTranslationDetail({ id }: { id: string }) {
 
     const draftData = useFetchData(
         [queryKeys.getAllMedicineDraftInteraction, id],
-        `drug-interactions/drafts/${id}/`,
+        `drug-interaction-translation/drafts/${id}/`,
     )
     const draftMedicine: MedicineInteractionTranslation = draftData.data
 

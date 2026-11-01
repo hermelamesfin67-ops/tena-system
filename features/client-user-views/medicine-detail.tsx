@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import { sections } from "@/constants";
 import TitleValueCard from "@/components/title-value-card";
 import MedicineWarning from "./warning/warning";
+import MedicineInteraction from "./interaction/interaction";
 
 type Props = {
     id: string
@@ -174,6 +175,9 @@ export default function MedicineDetails({ id }: Props) {
 
                 {/* Medicine Warning */}
                 <MedicineWarning id={id} />
+
+                {/* Medicine Interaction */}
+                <MedicineInteraction id={id} />
 
 
             </div>

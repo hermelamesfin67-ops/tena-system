@@ -12,7 +12,7 @@ function RejectedMedicineInteractionTranslationDetail({ id }: { id: string }) {
 
     const rejectedData = useFetchData(
         [queryKeys.getAllMedicineRejectedInteraction, id],
-        `drug-interactions//rejects/${id}/`,
+        `drug-interaction-translation/rejects/${id}/`,
     )
     const rejectedMedicineInteraction: MedicineInteractionTranslation = rejectedData.data
 

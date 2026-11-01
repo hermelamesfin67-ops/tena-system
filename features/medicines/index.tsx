@@ -160,7 +160,7 @@ function Medicines() {
                           <div className="mt-1 text-sm text-slate-500">
                             {medicine?.strength}
                             <span className="px-1 text-slate-300">·</span>
-                            {medicine?.dosage_form}
+                            {medicine?.dosage_form?.substring(0, 48) + "..."}
                           </div>
                         </TableCell>
                         <TableCell>

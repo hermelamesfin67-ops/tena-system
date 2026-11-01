@@ -79,7 +79,7 @@ function DraftMedicineInteractionTranslations() {
                                                 <TableCell className='flex items-center gap-3'>
                                                     <Tooltip>
                                                         <TooltipTrigger className={"cursor-pointer"} delay={100}>
-                                                            <Link href={routes.draftInteractionTranslationDetail(draft?.interaction)}>
+                                                            <Link href={routes.draftInteractionTranslationDetail(draft?.id)}>
                                                                 <Eye size={20} />
                                                             </Link>
                                                         </TooltipTrigger>
