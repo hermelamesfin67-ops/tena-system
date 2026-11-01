@@ -12,8 +12,9 @@ import { queryKeys } from '@/api/query-keys';
 import { hasObjectsDifferentValues } from '@/lib/utils';
 import { DialogClose, DialogFooter } from '@/components/ui/dialog';
 import { medicineWarningSchema, MedicineWarningSchemaType } from '@/validations/medicine.schema';
-import { drugWarnings } from '@/constants';
+import { drugWarnings, ROLES } from '@/constants';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useSession } from 'next-auth/react';
 
 type Props = {
     id?: string
@@ -24,6 +25,7 @@ type Props = {
 }
 export function MedicineWarningForm({ id, medicineId, warningType, setOpen, setIsEditOpen }: Props) {
     const queryClient = useQueryClient()
+    const { data: session } = useSession()
     const postMutation = useDynamicMutation({ type: "Json" })
     const initialValues = { warning_type: warningType || '' }
 
@@ -75,7 +77,7 @@ export function MedicineWarningForm({ id, medicineId, warningType, setOpen, setI
                     </Label>
                     <Select items={drugWarnings} onValueChange={(v: any) => setFieldValue("warning_type", v)}>
                         <SelectTrigger size="sm" className="max-w-xs w-full">
-                            <SelectValue />
+                            <SelectValue placeholder="Select Warning Type" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
@@ -89,11 +91,11 @@ export function MedicineWarningForm({ id, medicineId, warningType, setOpen, setI
                     </Select>
                     <ErrorMessage name="slug" component="p" className="text-xs text-red-600" />
                 </div>
-
-                <DialogFooter className="sm:justify-end">
-                    <DialogClose render={<Button type="button" variant={"outline"}>Cancel</Button>} />
-                    <Button disabled={postMutation.isPending} type="submit">{postMutation.isPending ? "Loading.." : id ? "Save Changes" : "Create"}</Button>
-                </DialogFooter>
+                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                    <DialogFooter className="sm:justify-end">
+                        <DialogClose render={<Button type="button" variant={"outline"}>Cancel</Button>} />
+                        <Button disabled={postMutation.isPending} type="submit">{postMutation.isPending ? "Loading.." : id ? "Save Changes" : "Create"}</Button>
+                    </DialogFooter>}
             </Form>
         )}
 

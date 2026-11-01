@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import ModalHeader from "@/components/modal-header";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { ROLES } from "@/constants";
+import { useSession } from "next-auth/react";
 
 type Props = {
     translation: MedicineInteractionTranslation
@@ -14,6 +16,7 @@ type Props = {
 
 function MedicineInteractionTranslationUpdateForm({ translation }: Props) {
     const router = useRouter()
+    const { data: session } = useSession()
     const postMutation = useDynamicMutation({ type: "Json" })
 
     const initialTranslations: MedicineInteractionTranslation = {
@@ -121,13 +124,13 @@ function MedicineInteractionTranslationUpdateForm({ translation }: Props) {
                                         </Field>
                                     </div>
                                 </div>
-
-                                <DialogFooter className="sm:justify-end">
-                                    <Button onClick={() => router.back()} variant={"outline"}>Back</Button>
-                                    <Button type="submit" disabled={postMutation.isPending}>
-                                        {postMutation.isPending ? "Loading.." : "Update"}
-                                    </Button>
-                                </DialogFooter>
+                                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                    <DialogFooter className="sm:justify-end">
+                                        <Button onClick={() => router.back()} variant={"outline"}>Back</Button>
+                                        <Button type="submit" disabled={postMutation.isPending}>
+                                            {postMutation.isPending ? "Loading.." : "Update"}
+                                        </Button>
+                                    </DialogFooter>}
                             </div>
                         </Form>
                     );

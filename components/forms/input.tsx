@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 interface FormikInputProps {
     id: string;
     name: string;
+    type?: string;
     label?: string | React.ReactNode;
     prefix?: string;
     placeholder?: string;
@@ -25,6 +26,7 @@ interface FormikInputProps {
     | "number"
     | "wholeNumber"
     | "url"
+    | "date"
     | "upperCaseAndNumerics"
     | "amharicAndEnglishLetters";
 }
@@ -33,6 +35,7 @@ const FormikInput: React.FC<FormikInputProps> = ({
     id,
     name,
     label,
+    type,
     prefix,
     placeholder,
     className,
@@ -67,6 +70,7 @@ const FormikInput: React.FC<FormikInputProps> = ({
                     placeholder={placeholder}
                     autoComplete="off"
                     maxLength={maxLength}
+                    type={type}
                     onInput={(e) => {
                         const input = e.currentTarget;
 
@@ -111,6 +115,12 @@ const FormikInput: React.FC<FormikInputProps> = ({
                         if (pattern === "url") {
                             input.value = input.value.replace(
                                 /[^a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]/g,
+                                "",
+                            );
+                        }
+                        if (pattern === "date") {
+                            input.value = input.value.replace(
+                                /[^0-9\-]/g,
                                 "",
                             );
                         }

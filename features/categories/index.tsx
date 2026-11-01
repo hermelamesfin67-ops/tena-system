@@ -29,6 +29,8 @@ import { routes } from "@/lib/routes";
 import { cn } from "cn";
 import { CategoryForm } from "./create";
 import { languageStyles } from "../language";
+import { ROLES } from "@/constants";
+import { useSession } from "next-auth/react";
 
 export const categoryStyles = [
     'bg-emerald-50 text-emerald-700',
@@ -39,6 +41,7 @@ export const categoryStyles = [
 const breadcrumb = [{ name: "Categories" }];
 function Categories() {
     const [open, setOpen] = useState(false);
+    const { data: session } = useSession()
 
     const categoryData = useFetchData(
         [queryKeys.getAllCategories],
@@ -49,12 +52,13 @@ function Categories() {
     return (
         <div className='flex flex-col gap-3 w-full'>
             <PageHeader breadcrumb={breadcrumb}>
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}><Plus /> Add Category</Button></div>} />
-                    <DialogContent className="sm:max-w-lg">
-                        <CategoryForm setOpen={setOpen} />
-                    </DialogContent>
-                </Dialog>
+                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                    <Dialog open={open} onOpenChange={setOpen}>
+                        <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}><Plus /> Add Category</Button></div>} />
+                        <DialogContent className="sm:max-w-lg">
+                            <CategoryForm setOpen={setOpen} />
+                        </DialogContent>
+                    </Dialog>}
             </PageHeader>
             <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white w-full">
                 <div className='overflow-x-auto w-full'>

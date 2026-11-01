@@ -9,6 +9,8 @@ import { queryKeys } from "@/api/query-keys";
 import ModalHeader from "@/components/modal-header";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { ROLES } from "@/constants";
+import { useSession } from "next-auth/react";
 
 type Props = {
     translation: MedicineWarningTranslation
@@ -16,6 +18,7 @@ type Props = {
 
 function MedicineWarningTranslationUpdateForm({ translation }: Props) {
     const router = useRouter()
+    const { data: session } = useSession()
     const queryClient = useQueryClient()
     const postMutation = useDynamicMutation({ type: "Json" })
 
@@ -141,13 +144,13 @@ function MedicineWarningTranslationUpdateForm({ translation }: Props) {
                                         </Field>
                                     </div>
                                 </div>
-
-                                <DialogFooter className="sm:justify-end">
-                                    <Button onClick={() => router.back()} variant={"outline"}>Back</Button>
-                                    <Button type="submit" disabled={postMutation.isPending}>
-                                        {postMutation.isPending ? "Loading.." : "Update"}
-                                    </Button>
-                                </DialogFooter>
+                                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                    <DialogFooter className="sm:justify-end">
+                                        <Button onClick={() => router.back()} variant={"outline"}>Back</Button>
+                                        <Button type="submit" disabled={postMutation.isPending}>
+                                            {postMutation.isPending ? "Loading.." : "Update"}
+                                        </Button>
+                                    </DialogFooter>}
                             </div>
                         </Form>
                     );

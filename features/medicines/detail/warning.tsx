@@ -11,13 +11,15 @@ import { useState } from 'react'
 import { MedicineWarningForm } from './warning-form'
 import { ChevronRight, Plus, TriangleAlert } from 'lucide-react'
 import { cn } from 'cn'
-import { warningBGstyle } from '@/constants'
+import { ROLES, warningBGstyle } from '@/constants'
+import { useSession } from 'next-auth/react'
 
 type Props = {
     id: string
 }
 function MedicineWarning({ id }: Props) {
     const [open, setOpen] = useState(false);
+    const { data: session } = useSession()
     const medicineWarningData = useFetchData(
         [queryKeys.getAllMedicineWarning, id],
         `drugs/warnings/?drug_id=${id}`,
@@ -31,14 +33,15 @@ function MedicineWarning({ id }: Props) {
                 title="Medicine Warning"
                 description="Information about the medicine warning."
             />
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}>
-                    <Plus /> Add Warning
-                </Button></div>} />
-                <DialogContent className="sm:max-w-lg">
-                    <MedicineWarningForm medicineId={id} setOpen={setOpen} />
-                </DialogContent>
-            </Dialog>
+            {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}>
+                        <Plus /> Add Warning
+                    </Button></div>} />
+                    <DialogContent className="sm:max-w-lg">
+                        <MedicineWarningForm medicineId={id} setOpen={setOpen} />
+                    </DialogContent>
+                </Dialog>}
             <div className='flex flex-col gap-5'>
                 {warnings?.length ? warnings?.map((warning, index) => {
                     const color = warningBGstyle[warning?.warning_type]

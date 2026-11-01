@@ -14,6 +14,8 @@ import { queryKeys } from '@/api/query-keys';
 import { hasObjectsDifferentValues } from '@/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import ModalHeader from '@/components/modal-header';
+import { ROLES } from '@/constants';
+import { useSession } from 'next-auth/react';
 
 export type MedicineValues = {
     generic_name: string;
@@ -25,6 +27,7 @@ export type MedicineValues = {
 };
 export function MedicineForm({ medicine, setOpen, setIsEditOpen }: { medicine?: Medicine, setOpen?: (arg: boolean) => void, setIsEditOpen?: (arg: boolean) => void }) {
     const queryClient = useQueryClient()
+    const { data: session } = useSession()
     const postMutation = useDynamicMutation({ type: "Json" })
     const categoryData = useFetchData(
         [queryKeys.getAllCategories],
@@ -144,10 +147,11 @@ export function MedicineForm({ medicine, setOpen, setIsEditOpen }: { medicine?: 
                 <Field type="checkbox" name="is_active" className="h-4 w-4 accent-emerald-700" />
                 Medicine is active
             </label> */}
-            <DialogFooter className="sm:justify-end">
-                <DialogClose render={<Button type="button" variant={"outline"}>Cancel</Button>} />
-                <Button disabled={postMutation.isPending} type="submit">{postMutation.isPending ? "Loading.." : medicine?.id ? "Save Changes" : "Create"}</Button>
-            </DialogFooter>
+            {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                <DialogFooter className="sm:justify-end">
+                    <DialogClose render={<Button type="button" variant={"outline"}>Cancel</Button>} />
+                    <Button disabled={postMutation.isPending} type="submit">{postMutation.isPending ? "Loading.." : medicine?.id ? "Save Changes" : "Create"}</Button>
+                </DialogFooter>}
         </Form>
     </Formik>
 }

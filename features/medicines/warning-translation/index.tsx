@@ -14,13 +14,15 @@ import { PenLine, TriangleAlert } from 'lucide-react'
 import { MedicineWarningForm } from '../detail/warning-form'
 import { Button } from '@/components/ui/button'
 import { cn } from 'cn'
-import { warningBGstyle } from '@/constants'
+import { ROLES, warningBGstyle } from '@/constants'
+import { useSession } from 'next-auth/react'
 
 type Props = {
     id: string
 }
 function MedicineWarningDetails({ id }: Props) {
     const [isEditOpen, setIsEditOpen] = useState(false);
+    const { data: session } = useSession()
     const [addLanguage, setAddLanguage] = useState<AddLanguage[]>([]);
 
     const medicineWarningTranslationData = useFetchData(
@@ -79,20 +81,21 @@ function MedicineWarningDetails({ id }: Props) {
                             </div>
                         </div>
 
-                        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-                            <DialogTrigger render={<div className='mr-3'>
-                                <Button className={"max-w-40 w-full"}>
-                                    <PenLine /> Edit Warning
-                                </Button></div>} />
-                            <DialogContent className="sm:max-w-lg">
-                                <MedicineWarningForm
-                                    id={warning?.id}
-                                    warningType={warning?.warning_type}
-                                    medicineId={warning?.drug}
-                                    setIsEditOpen={setIsEditOpen}
-                                />
-                            </DialogContent>
-                        </Dialog>
+                        {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                                <DialogTrigger render={<div className='mr-3'>
+                                    <Button className={"max-w-40 w-full"}>
+                                        <PenLine /> Edit Warning
+                                    </Button></div>} />
+                                <DialogContent className="sm:max-w-lg">
+                                    <MedicineWarningForm
+                                        id={warning?.id}
+                                        warningType={warning?.warning_type}
+                                        medicineId={warning?.drug}
+                                        setIsEditOpen={setIsEditOpen}
+                                    />
+                                </DialogContent>
+                            </Dialog>}
                     </div>
                     <TitleValueCard title="Last Updated At" value={formatDate(warning?.updated_at)} />
                     {warning?.rejection_reason && <TitleValueCard title="Rejection Reason" value={warning?.rejection_reason} />}

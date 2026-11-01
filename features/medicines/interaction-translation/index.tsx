@@ -14,6 +14,8 @@ import { PenLine } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from 'cn'
 import { MedicineInteractionForm } from '../detail/interaction-form'
+import { ROLES } from '@/constants'
+import { useSession } from 'next-auth/react'
 
 type Props = {
     id: string
@@ -21,6 +23,7 @@ type Props = {
 }
 function MedicineInteractionDetails({ id, medicineId }: Props) {
     const [isEditOpen, setIsEditOpen] = useState(false);
+    const { data: session } = useSession()
     const [addLanguage, setAddLanguage] = useState<AddLanguage[]>([]);
 
     const medicineInteractionTranslationData = useFetchData(
@@ -76,21 +79,22 @@ function MedicineInteractionDetails({ id, medicineId }: Props) {
                             <TitleValueCard title='Severity' value={interaction?.severity} />
                         </div>
 
-                        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-                            <DialogTrigger render={<div className='mr-3'>
-                                <Button className={"max-w-40 w-full"}>
-                                    <PenLine /> Edit Interaction
-                                </Button></div>} />
-                            <DialogContent className="sm:max-w-lg">
-                                <MedicineInteractionForm
-                                    id={interaction?.id}
-                                    medicineId={medicineId}
-                                    interactionWithId={interactionWithId}
-                                    severity={interaction?.severity}
-                                    setIsEditOpen={setIsEditOpen}
-                                />
-                            </DialogContent>
-                        </Dialog>
+                        {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                                <DialogTrigger render={<div className='mr-3'>
+                                    <Button className={"max-w-40 w-full"}>
+                                        <PenLine /> Edit Interaction
+                                    </Button></div>} />
+                                <DialogContent className="sm:max-w-lg">
+                                    <MedicineInteractionForm
+                                        id={interaction?.id}
+                                        medicineId={medicineId}
+                                        interactionWithId={interactionWithId}
+                                        severity={interaction?.severity}
+                                        setIsEditOpen={setIsEditOpen}
+                                    />
+                                </DialogContent>
+                            </Dialog>}
                     </div>
                     <TitleValueCard title="Last Updated At" value={formatDate(interaction?.updated_at)} />
 

@@ -35,9 +35,12 @@ import Link from 'next/link';
 import { routes } from '@/lib/routes';
 import { categoryStyles } from '../categories';
 import { languageStyles } from '../language';
+import { ROLES } from '@/constants';
+import { useSession } from 'next-auth/react';
 
 const breadcrumb = [{ name: "Medicines" }];
 function Medicines() {
+  const { data: session } = useSession()
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -72,12 +75,13 @@ function Medicines() {
   return (
     <div className='flex flex-col gap-3 w-full'>
       <PageHeader breadcrumb={breadcrumb}>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}><Plus /> Add Medicine</Button></div>} />
-          <DialogContent className="sm:max-w-lg">
-            <MedicineForm setOpen={setOpen} />
-          </DialogContent>
-        </Dialog>
+        {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}><Plus /> Add Medicine</Button></div>} />
+            <DialogContent className="sm:max-w-lg">
+              <MedicineForm setOpen={setOpen} />
+            </DialogContent>
+          </Dialog>}
       </PageHeader>
       <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white w-full">
         <div className='grid md:grid-cols-2 gap-3 p-3'>
@@ -195,30 +199,30 @@ function Medicines() {
                               <p className='text-xs'>View Detail</p>
                             </TooltipContent>
                           </Tooltip>
-                          <Tooltip>
-                            <TooltipTrigger className={"cursor-pointer"} delay={100}>
-                              <Dialog
-                                open={isEditOpen && editingMedicineId === medicine?.id}
-                                onOpenChange={(open) => {
-                                  if (open) {
-                                    setEditingMedicineId(medicine?.id)
-                                    setIsEditOpen(true)
-                                  } else {
-                                    setIsEditOpen(false)
-                                    setEditingMedicineId("")
-                                  }
-                                }}>
-                                <DialogTrigger render={<PenLine size={16} />} />
-                                <DialogContent className="sm:max-w-lg">
-                                  <MedicineForm medicine={medicine} setIsEditOpen={setIsEditOpen} />
-                                </DialogContent>
-                              </Dialog>
-                              {/*  */}
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className='text-xs'>Edit</p>
-                            </TooltipContent>
-                          </Tooltip>
+                          {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                            <Tooltip>
+                              <TooltipTrigger className={"cursor-pointer"} delay={100}>
+                                <Dialog
+                                  open={isEditOpen && editingMedicineId === medicine?.id}
+                                  onOpenChange={(open) => {
+                                    if (open) {
+                                      setEditingMedicineId(medicine?.id)
+                                      setIsEditOpen(true)
+                                    } else {
+                                      setIsEditOpen(false)
+                                      setEditingMedicineId("")
+                                    }
+                                  }}>
+                                  <DialogTrigger render={<PenLine size={16} />} />
+                                  <DialogContent className="sm:max-w-lg">
+                                    <MedicineForm medicine={medicine} setIsEditOpen={setIsEditOpen} />
+                                  </DialogContent>
+                                </Dialog>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className='text-xs'>Edit</p>
+                              </TooltipContent>
+                            </Tooltip>}
                         </TableCell>
                       </TableRow>
                     )

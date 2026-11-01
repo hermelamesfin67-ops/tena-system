@@ -11,12 +11,15 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { ChevronRight, Plus } from 'lucide-react'
 import { MedicineInteractionForm } from './interaction-form'
+import { ROLES } from '@/constants'
+import { useSession } from 'next-auth/react'
 
 type Props = {
     id: string
 }
 function MedicineInteractions({ id }: Props) {
     const [open, setOpen] = useState(false);
+    const { data: session } = useSession()
     const medicineInteractionData = useFetchData(
         [queryKeys.getAllDrugInteractions, id],
         `drugs/interactions/?drug_id=${id}`,
@@ -30,14 +33,15 @@ function MedicineInteractions({ id }: Props) {
                 title="Medicine Interactions"
                 description="Information about the medicine interaction."
             />
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}>
-                    <Plus /> Add Interaction
-                </Button></div>} />
-                <DialogContent className="sm:max-w-lg">
-                    <MedicineInteractionForm medicineId={id} setOpen={setOpen} />
-                </DialogContent>
-            </Dialog>
+            {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}>
+                        <Plus /> Add Interaction
+                    </Button></div>} />
+                    <DialogContent className="sm:max-w-lg">
+                        <MedicineInteractionForm medicineId={id} setOpen={setOpen} />
+                    </DialogContent>
+                </Dialog>}
             <div className='flex flex-col gap-5'>
                 {interactions?.length ? interactions?.map((interaction, index) => {
                     const interactionWith = interaction?.drug_a === id ? interaction?.drug_b_name : interaction?.drug_a_name

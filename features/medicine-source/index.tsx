@@ -24,7 +24,9 @@ import { Button } from "@/components/ui/button";
 import { useFetchData } from "@/api/use-fetch-data";
 import { queryKeys } from "@/api/query-keys";
 import Loader from "@/components/loader";
-// import { DrugSourceForm } from "./create";
+import { MedicineSourceForm } from "./create";
+import { useSession } from "next-auth/react";
+import { ROLES } from "@/constants";
 
 export const languageStyles = [
     'bg-purple-50 text-purple-700',
@@ -34,6 +36,7 @@ export const languageStyles = [
 
 const breadcrumb = [{ name: "Medicine Sources" }];
 function MedicineSource() {
+    const { data: session } = useSession()
     const [open, setOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingSourceId, setEditingSourceId] = useState("");
@@ -48,13 +51,14 @@ function MedicineSource() {
     return (
         <div className='flex flex-col gap-3 w-full'>
             <PageHeader breadcrumb={breadcrumb}>
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger render={<div className='flex justify-end'>
-                        <Button className={"max-w-40 w-full"}><Plus /> Add Source</Button></div>} />
-                    <DialogContent className="sm:max-w-lg">
-                        {/* <DrugSourceForm setOpen={setOpen} /> */}
-                    </DialogContent>
-                </Dialog>
+                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                    <Dialog open={open} onOpenChange={setOpen}>
+                        <DialogTrigger render={<div className='flex justify-end'>
+                            <Button className={"max-w-40 w-full"}><Plus /> Add Source</Button></div>} />
+                        <DialogContent className="sm:max-w-lg">
+                            <MedicineSourceForm setOpen={setOpen} />
+                        </DialogContent>
+                    </Dialog>}
             </PageHeader>
             <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white w-full">
                 <div className='overflow-x-auto w-full'>
@@ -95,29 +99,30 @@ function MedicineSource() {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className='flex items-center gap-3'>
-                                                    <Tooltip>
-                                                        <TooltipTrigger className={"cursor-pointer"} delay={100}>
-                                                            <Dialog
-                                                                open={isEditOpen && editingSourceId === source?.id}
-                                                                onOpenChange={(open) => {
-                                                                    if (open) {
-                                                                        setEditingSourceId(source?.id)
-                                                                        setIsEditOpen(true)
-                                                                    } else {
-                                                                        setIsEditOpen(false)
-                                                                        setEditingSourceId("")
-                                                                    }
-                                                                }}>
-                                                                <DialogTrigger render={<PenLine size={16} />} />
-                                                                <DialogContent className="sm:max-w-lg">
-                                                                    {/* <DrugSourceForm source={source} setIsEditOpen={setIsEditOpen} /> */}
-                                                                </DialogContent>
-                                                            </Dialog>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p className='text-xs'>Edit</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
+                                                    {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                                        <Tooltip>
+                                                            <TooltipTrigger className={"cursor-pointer"} delay={100}>
+                                                                <Dialog
+                                                                    open={isEditOpen && editingSourceId === source?.id}
+                                                                    onOpenChange={(open) => {
+                                                                        if (open) {
+                                                                            setEditingSourceId(source?.id)
+                                                                            setIsEditOpen(true)
+                                                                        } else {
+                                                                            setIsEditOpen(false)
+                                                                            setEditingSourceId("")
+                                                                        }
+                                                                    }}>
+                                                                    <DialogTrigger render={<PenLine size={16} />} />
+                                                                    <DialogContent className="sm:max-w-lg">
+                                                                        <MedicineSourceForm source={source} setIsEditOpen={setIsEditOpen} />
+                                                                    </DialogContent>
+                                                                </Dialog>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p className='text-xs'>Edit</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>}
                                                 </TableCell>
                                             </TableRow>
                                         )

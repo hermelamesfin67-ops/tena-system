@@ -25,6 +25,8 @@ import { useFetchData } from "@/api/use-fetch-data";
 import { queryKeys } from "@/api/query-keys";
 import Loader from "@/components/loader";
 import { LanguageForm } from "../language/create";
+import { useSession } from "next-auth/react";
+import { ROLES } from "@/constants";
 
 export const languageStyles = [
     'bg-purple-50 text-purple-700',
@@ -35,6 +37,7 @@ export const languageStyles = [
 const breadcrumb = [{ name: "Languages" }];
 function Languages() {
     const [open, setOpen] = useState(false);
+    const { data: session } = useSession()
     // const [isEditOpen, setIsEditOpen] = useState(false);
     // const [editingLanguageId, setEditingLanguageId] = useState("");
 
@@ -48,12 +51,13 @@ function Languages() {
     return (
         <div className='flex flex-col gap-3 w-full'>
             <PageHeader breadcrumb={breadcrumb}>
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}><Plus /> Add Language</Button></div>} />
-                    <DialogContent className="sm:max-w-lg">
-                        <LanguageForm setOpen={setOpen} />
-                    </DialogContent>
-                </Dialog>
+                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                    <Dialog open={open} onOpenChange={setOpen}>
+                        <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}><Plus /> Add Language</Button></div>} />
+                        <DialogContent className="sm:max-w-lg">
+                            <LanguageForm setOpen={setOpen} />
+                        </DialogContent>
+                    </Dialog>}
             </PageHeader>
             <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white w-full">
                 <div className='overflow-x-auto w-full'>

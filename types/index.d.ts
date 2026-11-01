@@ -144,3 +144,6 @@ type drugInteractionSeverity =
   | "major"
   | "contraindicated"
   | "unknown";
+
+  type medicineSourceType = "official_label" |"government" |"medical_reference" |"guideline" |"other"
+

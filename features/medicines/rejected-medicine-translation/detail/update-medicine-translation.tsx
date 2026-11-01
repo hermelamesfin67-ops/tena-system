@@ -7,6 +7,8 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { hasObjectsDifferentValues } from "@/lib/utils";
+import { ROLES } from "@/constants";
+import { useSession } from "next-auth/react";
 
 type Props = {
     translation: MedicineTranslation
@@ -14,6 +16,7 @@ type Props = {
 
 function MedicineTranslationUpdateForm({ translation }: Props) {
     const router = useRouter()
+    const { data: session } = useSession()
     const postMutation = useDynamicMutation({ type: "Json" })
 
     const initialTranslations: MedicineTranslation = {
@@ -156,12 +159,13 @@ function MedicineTranslationUpdateForm({ translation }: Props) {
                                     </div>
                                 </div>
 
-                                <DialogFooter className="sm:justify-end">
-                                    <Button onClick={() => router.back()} variant={"outline"}>Back</Button>
-                                    <Button type="submit" disabled={postMutation.isPending}>
-                                        {postMutation.isPending ? "Loading.." : "Update"}
-                                    </Button>
-                                </DialogFooter>
+                                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                    <DialogFooter className="sm:justify-end">
+                                        <Button onClick={() => router.back()} variant={"outline"}>Back</Button>
+                                        <Button type="submit" disabled={postMutation.isPending}>
+                                            {postMutation.isPending ? "Loading.." : "Update"}
+                                        </Button>
+                                    </DialogFooter>}
                             </div>
                         </Form>
                     );

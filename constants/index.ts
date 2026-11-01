@@ -1,3 +1,8 @@
+export const ROLES = {
+  SUPER_ADMIN: "superuser",
+  PHARMACIST: "pharmacist",
+  USER: "user",
+};
 export const sections = [
   {
     title: "What it treats",
@@ -165,3 +170,11 @@ export const warningTitleSubTitle: Record<
       "Review other important information about using this medicine safely.",
   },
 };
+
+export const medicineSourceTypes = [
+  { label: "Official product label", value: "official_label" },
+  { label: "Government health source", value: "government" },
+  { label: "Medical reference", value: "medical_reference" },
+  { label: "Clinical guideline", value: "guideline" },
+  { label: "Other", value: "other" },
+];

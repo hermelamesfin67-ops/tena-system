@@ -10,10 +10,13 @@ import { routes } from "@/lib/routes";
 import { useState } from "react";
 import { RejectRequest } from "./reject";
 import { PublishRequest } from "./publish";
+import { ROLES } from "@/constants";
+import { useSession } from "next-auth/react";
 
 const breadcrumb = [{ name: "Draft Medicine Translations", href: routes.draftMedicineTranslations }, { name: "Details" }];
 
 function DraftMedicineTranslationDetail({ id }: { id: string }) {
+    const { data: session } = useSession()
     const [openRejectDialog, setOpenRejectDialog] = useState(false);
     const [openPublishDialog, setOpenPublishDialog] = useState(false);
 
@@ -40,7 +43,8 @@ function DraftMedicineTranslationDetail({ id }: { id: string }) {
                 <TitleValueCard title="Storage Instructions" value={draftMedicine?.storage_instructions} />
                 <TitleValueCard title="Review Status" value={draftMedicine?.review_status} />
 
-                {draftMedicine?.review_status?.toUpperCase() === "DRAFT" &&
+                {session?.user?.user?.role === ROLES.PHARMACIST &&
+                    draftMedicine?.review_status?.toUpperCase() === "DRAFT" &&
                     <DialogFooter className="sm:justify-end">
                         <Dialog open={openRejectDialog} onOpenChange={setOpenRejectDialog}>
                             <DialogTrigger render={<div className='flex justify-end'>

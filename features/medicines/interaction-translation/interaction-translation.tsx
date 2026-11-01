@@ -15,6 +15,8 @@ import { queryKeys } from "@/api/query-keys";
 import ModalHeader from "@/components/modal-header";
 import Loader from "@/components/loader";
 import { AddLanguageForm } from "../../../components/add-language";
+import { ROLES } from "@/constants";
+import { useSession } from "next-auth/react";
 
 type TranslationFormValues = {
     translations: MedicineInteractionTranslation[];
@@ -31,6 +33,7 @@ type Props = {
 
 function MedicineInteractionTranslationForm({ id, translations, languageFetching, mergedLanguages, setAddLanguage }: Props) {
     const queryClient = useQueryClient()
+    const { data: session } = useSession()
     const postMutation = useDynamicMutation({ type: "Json" })
     const [open, setOpen] = useState(false);
 
@@ -204,22 +207,23 @@ function MedicineInteractionTranslationForm({ id, translations, languageFetching
                                             );
                                         })
                                     )}
-                                    <Dialog open={open} onOpenChange={setOpen}>
-                                        <DialogTrigger render={<div>
-                                            <button
-                                                type="button"
-                                                className={"capitalize shrink-0 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-medium border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}
-                                            >
-                                                <Plus size={17} /> Add Language
-                                            </button>
-                                        </div>} />
-                                        <DialogContent className="sm:max-w-lg">
-                                            <AddLanguageForm
-                                                setOpen={setOpen}
-                                                medicineLanguages={uniqueLanguages}
-                                                setAddLanguage={setAddLanguage} />
-                                        </DialogContent>
-                                    </Dialog>
+                                    {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                        <Dialog open={open} onOpenChange={setOpen}>
+                                            <DialogTrigger render={<div>
+                                                <button
+                                                    type="button"
+                                                    className={"capitalize shrink-0 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-medium border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}
+                                                >
+                                                    <Plus size={17} /> Add Language
+                                                </button>
+                                            </div>} />
+                                            <DialogContent className="sm:max-w-lg">
+                                                <AddLanguageForm
+                                                    setOpen={setOpen}
+                                                    medicineLanguages={uniqueLanguages}
+                                                    setAddLanguage={setAddLanguage} />
+                                            </DialogContent>
+                                        </Dialog>}
                                 </div>
 
                                 {selectedTranslation ? (
@@ -284,20 +288,21 @@ function MedicineInteractionTranslationForm({ id, translations, languageFetching
                                     </p>
                                 )}
 
-                                {selectedTranslation && <div className="flex justify-end">
-                                    <button
-                                        type="submit"
-                                        disabled={postMutation.isPending}
-                                        className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
-                                    >
-                                        {postMutation.isPending
-                                            ? "Saving..."
-                                            : isUpdate
-                                                ? <span>Save Changes ({selectedTranslation?.language_code?.toUpperCase()})</span>
-                                                : <span>Create ({selectedTranslation?.language_code?.toUpperCase()}) Translations</span>
-                                        }
-                                    </button>
-                                </div>}
+                                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                    selectedTranslation && <div className="flex justify-end">
+                                        <button
+                                            type="submit"
+                                            disabled={postMutation.isPending}
+                                            className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
+                                        >
+                                            {postMutation.isPending
+                                                ? "Saving..."
+                                                : isUpdate
+                                                    ? <span>Save Changes ({selectedTranslation?.language_code?.toUpperCase()})</span>
+                                                    : <span>Create ({selectedTranslation?.language_code?.toUpperCase()}) Translations</span>
+                                            }
+                                        </button>
+                                    </div>}
                             </div>
                         </Form>
                     );
