@@ -104,6 +104,32 @@ export const warningBGstyle: Record<
   },
 };
 
+export const severityColors: Record<
+  drugInteractionSeverity,
+  { background: string; text: string }
+> = {
+  minor: {
+    background: "bg-[#DCFCE7]",
+    text: "text-[#166534]",
+  },
+  moderate: {
+    background: "bg-[#FEF3C7]",
+    text: "text-[#92400E]",
+  },
+  major: {
+    background: "bg-[#FFEDD5]",
+    text: "text-[#9A3412]",
+  },
+  contraindicated: {
+    background: "bg-[#FEE2E2]",
+    text: "text-[#991B1B]",
+  },
+  unknown: {
+    background: "bg-[#E5E7EB]",
+    text: "text-[#374151]",
+  },
+};
+
 export const warningTitleSubTitle: Record<
   string,
   {
@@ -126,7 +152,8 @@ export const warningTitleSubTitle: Record<
   },
   pregnancy: {
     title: "Pregnancy considerations",
-    subTitle: "Consult a healthcare professional before using during pregnancy.",
+    subTitle:
+      "Consult a healthcare professional before using during pregnancy.",
   },
   breastfeeding: {
     title: "Breastfeeding considerations",
@@ -134,6 +161,7 @@ export const warningTitleSubTitle: Record<
   },
   other: {
     title: "Additional safety information",
-    subTitle: "Review other important information about using this medicine safely.",
+    subTitle:
+      "Review other important information about using this medicine safely.",
   },
 };

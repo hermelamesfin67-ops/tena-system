@@ -42,4 +42,9 @@ export const routes = {
     "/interaction-translation/rejected-interaction-translation",
   rejectedInteractionTranslationDetail: (id: string) =>
     `/interaction-translation/rejected-interaction-translation/${id}`,
+
+  medicineSources: "/medicine-source",
+  draftSourceTranslations: "/medicine-source/draft-medicine-source-translation",
+  rejectedSourceTranslations:
+    "/medicine-source/rejected-medicine-source-translation",
 };

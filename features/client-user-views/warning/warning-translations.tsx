@@ -10,6 +10,7 @@ import { formatDate } from '@/lib/date-time';
 import { cn } from 'cn';
 import { ChevronRight, TriangleAlert } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import MedicineSources from '../source';
 
 type Props = { warning: MedicineWarning }
 
@@ -21,7 +22,7 @@ function WarningTranslations({ warning }: Props) {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger render={<div>
-          <div className={cn('flex flex-col gap-2 md:flex-row md:items-center justify-between w-full p-3 md:px-6 rounded-2xl cursor-pointer hover:scale-105',
+          <div className={cn('flex flex-col gap-2 md:flex-row md:items-center justify-between w-full p-3 md:px-6 rounded-md cursor-pointer hover:shadow-md transition-shadow',
             color.background)}
           >
             <div className='flex items-center gap-3'>
@@ -72,9 +73,24 @@ const Translations = ({ warning }: Props) => {
       language_code: translation.language_code,
     };
   });
+
+  const sourceData = useFetchData(
+    [queryKeys.getAllMedicineSource],
+    `drugs/sources/`,
+  )
+  const sources: MedicineSource[] = sourceData.data
+  const sourceMap = new Map(
+    sources?.map((source) => [source?.id, source])
+  );
+
+  const warningSources = warning?.sources
+    ?.map((id) => sourceMap.get(id))
+    ?.filter((source): source is MedicineSource => !!source);
+
   const warningTranslation = useMemo(() => {
     return warning?.translations?.filter((tr) => tr?.language_code === language)[0]
   }, [language, warning])
+
   const hasTranslation = warningTranslation &&
     typeof warningTranslation === "object" &&
     Object.keys(warningTranslation).length > 0
@@ -121,6 +137,8 @@ const Translations = ({ warning }: Props) => {
           <p className={cn('text-gray-400', color.text)}>{warningTranslation.recommended_action}</p>
         </div>
       }
+
+      <MedicineSources sources={warningSources || []} />
     </div>
   </div>
 }

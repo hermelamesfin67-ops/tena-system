@@ -20,7 +20,7 @@ export default function Header({ portal = false }: { portal?: boolean }) {
   const { data: session } = useSession()
   return (
     <header
-      className={cn("flex items-center justify-between gap-4 sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur px-4 py-2 w-full",
+      className={cn("flex items-center justify-between gap-4 sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur p-4 w-full",
         !portal && "max-w-7xl mx-auto"
       )}
     >

@@ -70,6 +70,7 @@ type Medicine = {
   status: string;
   updated_at: Date;
   categories: string[];
+  sources: string[];
   translations: MedicineTranslation[];
 };
 
@@ -92,7 +93,7 @@ type MedicineInteraction = {
   drug_a_name: string;
   drug_b: string;
   drug_b_name: string;
-  severity: string;
+  severity: drugInteractionSeverity;
   sources: string[];
   review_status: string;
   translations: MedicineInteractionTranslation[];
@@ -118,4 +119,28 @@ type AddLanguage = {
   id: string;
 };
 
-type medicineWarning = "contraindication" |"precaution" |"allergy"|"pregnancy" |"breastfeeding" |"other"
+type MedicineSource = {
+  id: string;
+  title: string;
+  organization: string;
+  url: string;
+  source_type: string;
+  publication_date: null;
+  accessed_at: string;
+  notes: string;
+};
+
+type medicineWarning =
+  | "contraindication"
+  | "precaution"
+  | "allergy"
+  | "pregnancy"
+  | "breastfeeding"
+  | "other";
+
+type drugInteractionSeverity =
+  | "minor"
+  | "moderate"
+  | "major"
+  | "contraindicated"
+  | "unknown";

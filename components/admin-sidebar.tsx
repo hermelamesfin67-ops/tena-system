@@ -36,6 +36,9 @@ const nav = [
             { label: 'Rejected Translations', href: routes.rejectedInteractionTranslations },
         ]
     },
+    {
+        label: 'Drug Source', icon: Globe2, href: routes.medicineSources,
+    },
     { label: 'Categories', icon: Boxes, href: routes.category, },
     { label: 'Languages', icon: Globe2, href: routes.languages },
     { label: 'Pharmacist', icon: Users, href: routes.pharmacist },

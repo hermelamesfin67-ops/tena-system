@@ -12,4 +12,5 @@ export const queryKeys = {
   getAllMedicineInteractions: "getAllMedicineInteractionsApi",
   getAllMedicineDraftInteraction: "getAllMedicineDraftInteractionApi",
   getAllMedicineRejectedInteraction: "getAllMedicineRejectedInteractionApi",
+  getAllMedicineSource: "getAllMedicineSourceApi",
 };

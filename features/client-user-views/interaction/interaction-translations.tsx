@@ -5,21 +5,28 @@ import Loader from '@/components/loader';
 import TitleValueCard from '@/components/title-value-card';
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { severityColors } from '@/constants';
 import { formatDate } from '@/lib/date-time';
 import { cn } from 'cn';
 import { ChevronRight } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import MedicineSources from '../source';
 
 type Props = { interaction: MedicineInteraction }
 
 function InteractionTranslations({ interaction }: Props) {
   const [open, setOpen] = useState(false);
+  const colors = useMemo(() => {
+    return severityColors[interaction?.severity]
+  }, [interaction?.severity]);
 
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger render={<div>
-          <div className={cn('flex flex-col gap-2 md:flex-row md:items-center justify-between w-full p-3 md:px-6 rounded-2xl cursor-pointer hover:bg-gray-50')}
+          <div className={cn('flex flex-col gap-2 md:flex-row md:items-center justify-between w-full p-6 rounded-md cursor-pointer hover:shadow-md transition-shadow',
+            colors?.background, colors?.text
+          )}
           >
             <div className='flex items-center gap-3'>
               <div>
@@ -63,20 +70,38 @@ const Translations = ({ interaction }: Props) => {
       language_code: translation.language_code,
     };
   });
+
+  const sourceData = useFetchData(
+    [queryKeys.getAllMedicineSource],
+    `drugs/sources/`,
+  )
+  const sources: MedicineSource[] = sourceData.data
+  const sourceMap = new Map(
+    sources?.map((source) => [source?.id, source])
+  );
+
+  const interactionSources = interaction?.sources
+    ?.map((id) => sourceMap.get(id))
+    ?.filter((source): source is MedicineSource => !!source);
+
   const interactionTranslation = useMemo(() => {
     return interaction?.translations?.filter((tr) => tr?.language_code === language)[0]
   }, [language, interaction])
+
   const hasTranslation = interactionTranslation &&
     typeof interactionTranslation === "object" &&
     Object.keys(interactionTranslation).length > 0
 
+  const colors = useMemo(() => {
+    return severityColors[interaction?.severity]
+  }, [interaction?.severity]);
 
   return <div className='flex flex-col gap-3 w-full'>
     <div className="flex flex-col gap-5 rounded-md p-3">
       <div className='flex items-center gap-3'>
         <div>
           <span className={cn('uppercase text-xs text-gray-400')}>{interaction?.severity}</span>
-          <p className='capitalize text-lg font-bold'>{interaction?.drug_a_name} & {interaction?.drug_b_name}</p>
+          <p className={cn('capitalize text-lg font-bold', colors.text)}>{interaction?.drug_a_name} & {interaction?.drug_b_name}</p>
         </div>
       </div>
 
@@ -106,6 +131,8 @@ const Translations = ({ interaction }: Props) => {
           <p className={cn('text-gray-400')}>{interactionTranslation.recommended_action}</p>
         </div>
       }
+
+      <MedicineSources sources={interactionSources || []} />
     </div>
   </div>
 }

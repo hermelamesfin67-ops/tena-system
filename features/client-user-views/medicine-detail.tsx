@@ -9,6 +9,7 @@ import { sections } from "@/constants";
 import TitleValueCard from "@/components/title-value-card";
 import MedicineWarning from "./warning/warning";
 import MedicineInteraction from "./interaction/interaction";
+import MedicineSources from "./source";
 
 type Props = {
     id: string
@@ -41,6 +42,18 @@ export default function MedicineDetails({ id }: Props) {
                 )
             );
         });
+
+    const sourceData = useFetchData(
+        [queryKeys.getAllMedicineSource],
+        `drugs/sources/`,
+    )
+    const sources: MedicineSource[] = sourceData.data
+    const sourceMap = new Map(
+        sources?.map((source) => [source?.id, source])
+    );
+    const medicineSources = medicine?.sources
+        ?.map((id) => sourceMap.get(id))
+        ?.filter((source): source is MedicineSource => !!source);
 
     const languagesData = useFetchData(
         [queryKeys.getAllLanguages],
@@ -172,6 +185,9 @@ export default function MedicineDetails({ id }: Props) {
                         );
                     })}
                 </div>
+
+                {/* Medicine Sources */}
+                <MedicineSources titleTrue sources={medicineSources || []} />
 
                 {/* Medicine Warning */}
                 <MedicineWarning id={id} />
