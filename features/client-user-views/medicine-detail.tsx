@@ -186,8 +186,6 @@ export default function MedicineDetails({ id }: Props) {
                     })}
                 </div>
 
-                {/* Medicine Sources */}
-                <MedicineSources titleTrue sources={medicineSources || []} />
 
                 {/* Medicine Warning */}
                 <MedicineWarning id={id} />
@@ -195,6 +193,8 @@ export default function MedicineDetails({ id }: Props) {
                 {/* Medicine Interaction */}
                 <MedicineInteraction id={id} />
 
+                {/* Medicine Sources */}
+                <MedicineSources titleTrue sources={medicineSources || []} />
 
             </div>
 
