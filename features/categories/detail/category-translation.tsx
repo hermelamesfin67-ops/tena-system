@@ -15,6 +15,8 @@ import ModalHeader from "@/components/modal-header";
 import Loader from "@/components/loader";
 import { AddLanguageForm } from "@/components/add-language";
 import { singleTranslationSchema } from "@/validations/category.schema";
+import { ROLES } from "@/constants";
+import { useSession } from "next-auth/react";
 
 type TranslationFormValues = {
     translations: CategoryTranslation[];
@@ -29,9 +31,11 @@ type Props = {
 }
 
 function CategoryTranslationForm({ categoryId, translations, languageFetching, mergedLanguages, setAddLanguage }: Props) {
+    const { data: session } = useSession()
     const queryClient = useQueryClient()
     const postMutation = useDynamicMutation({ type: "Json" })
     const [open, setOpen] = useState(false);
+    const hasPermission = session?.user?.user?.role === ROLES.SUPER_ADMIN
 
     const uniqueLanguages = Array.from(
         new Map(
@@ -76,12 +80,15 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
 
     const handleLanguageTranslation = async (
         values: CategoryTranslation
-    ): Promise<TranslationAction> => {
+    ) => {
         const translationAction: TranslationAction = values.id
             ? "update"
             : "create";
 
         const isUpdate = translationAction === "update";
+
+        // If the user does not have permission, do not proceed with the action.
+        if (!hasPermission) return null
 
         try {
             await postMutation.mutateAsync({
@@ -214,22 +221,23 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
                                             );
                                         })
                                     )}
-                                    <Dialog open={open} onOpenChange={setOpen}>
-                                        <DialogTrigger render={<div>
-                                            <button
-                                                type="button"
-                                                className={"capitalize shrink-0 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-medium border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}
-                                            >
-                                                <Plus size={17} /> Add Language
-                                            </button>
-                                        </div>} />
-                                        <DialogContent className="sm:max-w-lg">
-                                            <AddLanguageForm
-                                                setOpen={setOpen}
-                                                medicineLanguages={uniqueLanguages}
-                                                setAddLanguage={setAddLanguage} />
-                                        </DialogContent>
-                                    </Dialog>
+                                    {hasPermission &&
+                                        <Dialog open={open} onOpenChange={setOpen}>
+                                            <DialogTrigger render={<div>
+                                                <button
+                                                    type="button"
+                                                    className={"capitalize shrink-0 rounded-full px-4 py-2 flex items-center gap-2 text-xs font-medium border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}
+                                                >
+                                                    <Plus size={17} /> Add Language
+                                                </button>
+                                            </div>} />
+                                            <DialogContent className="sm:max-w-lg">
+                                                <AddLanguageForm
+                                                    setOpen={setOpen}
+                                                    medicineLanguages={uniqueLanguages}
+                                                    setAddLanguage={setAddLanguage} />
+                                            </DialogContent>
+                                        </Dialog>}
                                 </div>
 
                                 {selectedTranslation ? (
@@ -258,12 +266,14 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
                                                             id={field}
                                                             name={`translations[${selectedIndex}].${field}`}
                                                             rows={3}
+                                                            disabled={!hasPermission}
                                                             placeholder={`Enter ${label.toLowerCase()}`}
                                                             className="w-full rounded-md border border-slate-200 p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                                                         />
                                                     ) : (
                                                         <Field
                                                             id={field}
+                                                            disabled={!hasPermission}
                                                             name={`translations[${selectedIndex}].${field}`}
                                                             placeholder={`Enter ${label.toLowerCase()}`}
                                                             className="w-full rounded-md border border-slate-200 p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"
@@ -286,20 +296,21 @@ function CategoryTranslationForm({ categoryId, translations, languageFetching, m
                                     </p>
                                 )}
 
-                                {selectedTranslation && <div className="flex justify-end">
-                                    <button
-                                        type="submit"
-                                        disabled={postMutation.isPending || isUpdate}
-                                        className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
-                                    >
-                                        {postMutation.isPending
-                                            ? "Saving..."
-                                            : isUpdate
-                                                ? <span>Save Changes ({selectedTranslation?.language_code?.toUpperCase()})</span>
-                                                : <span>Create ({selectedTranslation?.language_code?.toUpperCase()}) Translations</span>
-                                        }
-                                    </button>
-                                </div>}
+                                {hasPermission &&
+                                    selectedTranslation && <div className="flex justify-end">
+                                        <button
+                                            type="submit"
+                                            disabled={postMutation.isPending || isUpdate}
+                                            className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
+                                        >
+                                            {postMutation.isPending
+                                                ? "Saving..."
+                                                : isUpdate
+                                                    ? <span>Save Changes ({selectedTranslation?.language_code?.toUpperCase()})</span>
+                                                    : <span>Create ({selectedTranslation?.language_code?.toUpperCase()}) Translations</span>
+                                            }
+                                        </button>
+                                    </div>}
                             </div>
                         </Form>
                     );

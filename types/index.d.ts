@@ -83,6 +83,7 @@ type MedicineInteractionTranslation = {
   recommended_action: string;
   review_status: string;
   reviewed_by: string;
+  rejection_reason: string;
   reviewed_at: string;
   updated_at: Date;
 };
@@ -145,5 +146,9 @@ type drugInteractionSeverity =
   | "contraindicated"
   | "unknown";
 
-  type medicineSourceType = "official_label" |"government" |"medical_reference" |"guideline" |"other"
-
+type medicineSourceType =
+  | "official_label"
+  | "government"
+  | "medical_reference"
+  | "guideline"
+  | "other";

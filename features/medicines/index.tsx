@@ -37,6 +37,7 @@ import { categoryStyles } from '../categories';
 import { languageStyles } from '../language';
 import { ROLES } from '@/constants';
 import { useSession } from 'next-auth/react';
+import Empty from '@/components/empty';
 
 const breadcrumb = [{ name: "Medicines" }];
 function Medicines() {
@@ -50,6 +51,8 @@ function Medicines() {
   const [pageSize, setPageSize] = useState(10);
   const [debouncedValue, setDebouncedValue] = useState("");
   const [category, setCategory] = useState("");
+  const hasPermission = session?.user?.user?.role === ROLES.SUPER_ADMIN
+
 
   const medicineData = useFetchData(
     [queryKeys.getAllMedicine, debouncedValue, category, currentPage, pageSize],
@@ -62,6 +65,13 @@ function Medicines() {
     `categories/`,
   )
   const categories: Category[] = categoryData.data?.results
+  const categoryList = [
+    { id: "all_categories", slug: "All Categories" },
+    ...(categories?.map((category) => ({
+      id: category?.id,
+      slug: category?.slug,
+    })) ?? []),
+  ];
 
   const [,] = useDebounce(
     () => {
@@ -75,7 +85,7 @@ function Medicines() {
   return (
     <div className='flex flex-col gap-3 w-full'>
       <PageHeader breadcrumb={breadcrumb}>
-        {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+        {hasPermission &&
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger render={<div className='flex justify-end'><Button className={"max-w-40 w-full"}><Plus /> Add Medicine</Button></div>} />
             <DialogContent className="sm:max-w-lg">
@@ -117,13 +127,17 @@ function Medicines() {
           </div>
           <div className='flex flex-wrap justify-end w-full'>
             <Select value={category}>
-              <SelectTrigger className={"w-36"}>
+              <SelectTrigger className={"w-48"}>
                 <SelectValue placeholder="By Category" />
               </SelectTrigger>
               <SelectContent>
-                {categories
+                {categoryList
                   ?.map(cat => <SelectItem key={cat?.id} onClick={() => {
                     setCurrentPage(1)
+                    if (cat?.slug === "All Categories") {
+                      setCategory("")
+                      return
+                    }
                     setCategory(cat?.slug)
                   }} value={cat}>{cat?.slug}</SelectItem>)}
               </SelectContent>
@@ -142,101 +156,91 @@ function Medicines() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {
-                medicineData?.isFetching ?
-                  <TableRow>
+              {medicines?.length ? medicines?.map((medicine) => {
+                const categoryNames = categories
+                  ?.filter((category) => medicine?.categories?.includes(category?.id))
+                  ?.map((cat) => cat.slug)
+                return (
+                  <TableRow key={medicine?.id}>
                     <TableCell>
-                      <Loader />
+                      <div className="font-medium text-slate-900">
+                        {medicine?.generic_name}
+                        <span className="font-normal text-slate-400"> / </span>
+                        <span className="font-normal text-slate-600">{medicine?.brand_name}</span>
+                      </div>
+                      <div className="mt-1 text-sm text-slate-500">
+                        {medicine?.strength}
+                        <span className="px-1 text-slate-300">·</span>
+                        {medicine?.dosage_form?.substring(0, 48) + "..."}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1.5">
+                        {categoryNames?.map((category, index) => (
+                          <span key={category} className={`inline-flex whitespace-nowrap capitalize rounded-full px-3 py-1 text-xs font-medium ${categoryStyles[index % categoryStyles.length]}`}>
+                            {category}
+                          </span>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-1.5">
+                        {medicine?.translations?.map((tr, index) => (
+                          <span key={tr?.language_code} className={cn(`inline-flex h-8 min-w-10 items-center justify-center rounded-full px-3 text-xs font-semibold`,
+                            languageStyles[index % languageStyles.length]
+                          )}>
+                            {tr?.language_code?.toUpperCase()}
+                          </span>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap text-slate-600">{formatDate(medicine?.updated_at)}</TableCell>
+                    <TableCell className='flex items-center gap-3'>
+                      <Tooltip>
+                        <TooltipTrigger className={"cursor-pointer"} delay={100}>
+                          <Link href={routes.medicineDetails(medicine?.id)}>
+                            <Eye size={20} />
+                          </Link>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className='text-xs'>View Detail</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      {hasPermission &&
+                        <Tooltip>
+                          <TooltipTrigger className={"cursor-pointer"} delay={100}>
+                            <Dialog
+                              open={isEditOpen && editingMedicineId === medicine?.id}
+                              onOpenChange={(open) => {
+                                if (open) {
+                                  setEditingMedicineId(medicine?.id)
+                                  setIsEditOpen(true)
+                                } else {
+                                  setIsEditOpen(false)
+                                  setEditingMedicineId("")
+                                }
+                              }}>
+                              <DialogTrigger render={<PenLine size={16} />} />
+                              <DialogContent className="sm:max-w-lg">
+                                <MedicineForm medicine={medicine} setIsEditOpen={setIsEditOpen} />
+                              </DialogContent>
+                            </Dialog>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className='text-xs'>Edit</p>
+                          </TooltipContent>
+                        </Tooltip>}
                     </TableCell>
                   </TableRow>
-                  : medicines?.length ? medicines?.map((medicine) => {
-                    const categoryNames = categories
-                      ?.filter((category) => medicine?.categories?.includes(category?.id))
-                      ?.map((cat) => cat.slug)
-                    return (
-                      <TableRow key={medicine?.id}>
-                        <TableCell>
-                          <div className="font-medium text-slate-900">
-                            {medicine?.generic_name}
-                            <span className="font-normal text-slate-400"> / </span>
-                            <span className="font-normal text-slate-600">{medicine?.brand_name}</span>
-                          </div>
-                          <div className="mt-1 text-sm text-slate-500">
-                            {medicine?.strength}
-                            <span className="px-1 text-slate-300">·</span>
-                            {medicine?.dosage_form?.substring(0, 48) + "..."}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1.5">
-                            {categoryNames?.map((category, index) => (
-                              <span key={category} className={`inline-flex whitespace-nowrap capitalize rounded-full px-3 py-1 text-xs font-medium ${categoryStyles[index % categoryStyles.length]}`}>
-                                {category}
-                              </span>
-                            ))}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-1.5">
-                            {medicine?.translations?.map((tr, index) => (
-                              <span key={tr?.language_code} className={cn(`inline-flex h-8 min-w-10 items-center justify-center rounded-full px-3 text-xs font-semibold`,
-                                languageStyles[index % languageStyles.length]
-                              )}>
-                                {tr?.language_code?.toUpperCase()}
-                              </span>
-                            ))}
-                          </div>
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap text-slate-600">{formatDate(medicine?.updated_at)}</TableCell>
-                        <TableCell className='flex items-center gap-3'>
-                          <Tooltip>
-                            <TooltipTrigger className={"cursor-pointer"} delay={100}>
-                              <Link href={routes.medicineDetails(medicine?.id)}>
-                                <Eye size={20} />
-                              </Link>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className='text-xs'>View Detail</p>
-                            </TooltipContent>
-                          </Tooltip>
-                          {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
-                            <Tooltip>
-                              <TooltipTrigger className={"cursor-pointer"} delay={100}>
-                                <Dialog
-                                  open={isEditOpen && editingMedicineId === medicine?.id}
-                                  onOpenChange={(open) => {
-                                    if (open) {
-                                      setEditingMedicineId(medicine?.id)
-                                      setIsEditOpen(true)
-                                    } else {
-                                      setIsEditOpen(false)
-                                      setEditingMedicineId("")
-                                    }
-                                  }}>
-                                  <DialogTrigger render={<PenLine size={16} />} />
-                                  <DialogContent className="sm:max-w-lg">
-                                    <MedicineForm medicine={medicine} setIsEditOpen={setIsEditOpen} />
-                                  </DialogContent>
-                                </Dialog>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p className='text-xs'>Edit</p>
-                              </TooltipContent>
-                            </Tooltip>}
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })
-                    : <TableRow className='h-36 w-full flex items-center justify-center'>
-                      <TableCell className="font-semibold text-slate-600">
-                        No medicines found
-                      </TableCell>
-                    </TableRow>
-              }
+                )
+              }) : null}
             </TableBody>
           </Table>
+          {medicineData?.isFetching ? <Loader />
+            : medicines?.length === 0 && <Empty title="No medicines found" />}
         </div>
       </div>
+
       <TablePagination
         pageSize={pageSize}
         setPageSize={(val) => {

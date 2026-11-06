@@ -35,6 +35,8 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
     const { data: session } = useSession()
     const postMutation = useDynamicMutation({ type: "Json" })
     const [open, setOpen] = useState(false);
+    const hasPermission = session?.user?.user?.role === ROLES.SUPER_ADMIN
+
 
     const uniqueLanguages = Array.from(
         new Map(
@@ -89,6 +91,10 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
             : "create";
 
         const isUpdate = translationAction === "update";
+
+        // If the user does not have permission, do not proceed with the action.
+        if (!hasPermission) return null
+
         try {
             await postMutation.mutateAsync({
                 url: isUpdate ? `drug-translations/${values?.id}/` : `drugs/translations/create/`,
@@ -217,7 +223,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                                             );
                                         })
                                     )}
-                                    {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                    {hasPermission &&
                                         <Dialog open={open} onOpenChange={setOpen}>
                                             <DialogTrigger render={<div>
                                                 <button
@@ -269,6 +275,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                                                             id={field}
                                                             name={`translations[${selectedIndex}].${field}`}
                                                             rows={3}
+                                                            disabled={!hasPermission}
                                                             placeholder={`Enter ${label.toLowerCase()}`}
                                                             className="w-full rounded-md border border-slate-200 p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                                                         />
@@ -277,6 +284,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                                                             id={field}
                                                             name={`translations[${selectedIndex}].${field}`}
                                                             placeholder={`Enter ${label.toLowerCase()}`}
+                                                            disabled={!hasPermission}
                                                             className="w-full rounded-md border border-slate-200 p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                                                         />
                                                     )}
@@ -317,7 +325,7 @@ function MedicineTranslationForm({ medicineId, translations, languageFetching, m
                                     </p>
                                 )}
 
-                                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                {hasPermission &&
                                     selectedTranslation && <div className="flex justify-end">
                                         <button
                                             type="submit"

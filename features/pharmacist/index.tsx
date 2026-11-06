@@ -27,6 +27,7 @@ import Loader from "@/components/loader";
 import { PharmacistForm } from "./create";
 import { ROLES } from "@/constants";
 import { useSession } from "next-auth/react";
+import Empty from "@/components/empty";
 
 const breadcrumb = [{ name: "Pharmacist" }];
 function Pharmacist() {
@@ -63,28 +64,21 @@ function Pharmacist() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {
-                                pharmacistData?.isFetching ?
-                                    <TableRow>
+                            {pharmacist?.length ? pharmacist?.map((usr) => {
+                                return (
+                                    <TableRow key={usr?.id}>
                                         <TableCell>
-                                            <Loader />
+                                            <div className="font-medium capitalize text-slate-900">
+                                                {usr?.username}
+                                            </div>
                                         </TableCell>
-                                    </TableRow>
-                                    : pharmacist?.length ? pharmacist?.map((usr) => {
-                                        return (
-                                            <TableRow key={usr?.id}>
-                                                <TableCell>
-                                                    <div className="font-medium capitalize text-slate-900">
-                                                        {usr?.username}
-                                                    </div>
-                                                </TableCell>
 
-                                                <TableCell>
-                                                    <div className="font-medium text-slate-900">
-                                                        {usr?.email}
-                                                    </div>
-                                                </TableCell>
-                                                {/* <TableCell className='flex items-center gap-3'>
+                                        <TableCell>
+                                            <div className="font-medium text-slate-900">
+                                                {usr?.email}
+                                            </div>
+                                        </TableCell>
+                                        {/* <TableCell className='flex items-center gap-3'>
                                                     <Tooltip>
                                                         <TooltipTrigger className={"cursor-pointer"} delay={100}>
                                                             <Dialog
@@ -109,17 +103,14 @@ function Pharmacist() {
                                                         </TooltipContent>
                                                     </Tooltip>
                                                 </TableCell> */}
-                                            </TableRow>
-                                        )
-                                    })
-                                        : <TableRow className='h-36 w-full flex items-center justify-center'>
-                                            <TableCell className="font-semibold text-slate-600">
-                                                No Pharmacist found
-                                            </TableCell>
-                                        </TableRow>
-                            }
+                                    </TableRow>
+                                )
+                            }) : null}
                         </TableBody>
                     </Table>
+                    {pharmacistData?.isFetching ? <Loader />
+                        : pharmacist?.length === 0 && <Empty title="No pharmacists found" />}
+
                 </div>
             </div>
         </div>

@@ -12,11 +12,14 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { routes } from '@/lib/routes';
 import { useState } from 'react';
+import { ROLES } from '@/constants';
+import { useSession } from 'next-auth/react';
 
 const nav = [
-    { label: 'Overview', icon: LayoutDashboard, href: routes.overview },
+    { label: 'Overview', icon: LayoutDashboard, href: routes.overview, allowedPermissions: [ROLES.SUPER_ADMIN, ROLES.PHARMACIST] },
     {
         label: 'Medicines', icon: Activity, href: routes.medicines,
+        allowedPermissions: [ROLES.SUPER_ADMIN, ROLES.PHARMACIST],
         subMenu: [
             { label: 'Draft Translations', href: routes.draftMedicineTranslations },
             { label: 'Rejected Translations', href: routes.rejectedMedicineTranslations },
@@ -24,6 +27,7 @@ const nav = [
     },
     {
         label: 'Drug Warning', icon: BookAlert, href: "#",
+        allowedPermissions: [ROLES.SUPER_ADMIN, ROLES.PHARMACIST],
         subMenu: [
             { label: 'Draft Translations', href: routes.draftWarningTranslations },
             { label: 'Rejected Translations', href: routes.rejectedWarningTranslations },
@@ -31,6 +35,7 @@ const nav = [
     },
     {
         label: 'Drug Interaction', icon: BookAlert, href: "#",
+        allowedPermissions: [ROLES.SUPER_ADMIN, ROLES.PHARMACIST],
         subMenu: [
             { label: 'Draft Translations', href: routes.draftInteractionTranslations },
             { label: 'Rejected Translations', href: routes.rejectedInteractionTranslations },
@@ -38,11 +43,12 @@ const nav = [
     },
     {
         label: 'Drug Source', icon: Globe2, href: routes.medicineSources,
+        allowedPermissions: [ROLES.SUPER_ADMIN]
     },
-    { label: 'Categories', icon: Boxes, href: routes.category, },
-    { label: 'Languages', icon: Globe2, href: routes.languages },
-    { label: 'Pharmacist', icon: Users, href: routes.pharmacist },
-];
+    { label: 'Categories', icon: Boxes, href: routes.category, allowedPermissions: [ROLES.SUPER_ADMIN, ROLES.PHARMACIST] },
+    { label: 'Languages', icon: Globe2, href: routes.languages, allowedPermissions: [ROLES.SUPER_ADMIN, ROLES.PHARMACIST] },
+    { label: 'Pharmacist', icon: Users, href: routes.pharmacist, allowedPermissions: [ROLES.SUPER_ADMIN] },
+]
 
 
 
@@ -55,11 +61,16 @@ const NavLinks = ({
     setIsOpen: (arg: boolean) => void;
     mobile?: boolean;
 }) => {
+    const { data: session } = useSession();
     const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+    const filteredNav = nav
+        ?.filter(({ subMenu }) => !subMenu || subMenu.length > 0)
+        ?.filter(({ allowedPermissions }) => allowedPermissions?.includes(session?.user?.user?.role || ''))
+
 
     return (
         <div className="space-y-1">
-            {nav.map(({ label, href, icon: Icon, subMenu }) => {
+            {filteredNav.map(({ label, href, icon: Icon, subMenu }) => {
                 const isActive = pathName?.includes(href);
 
                 const hasActiveSubMenu = subMenu?.some(({ href }) =>

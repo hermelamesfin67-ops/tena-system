@@ -31,6 +31,7 @@ import { CategoryForm } from "./create";
 import { languageStyles } from "../language";
 import { ROLES } from "@/constants";
 import { useSession } from "next-auth/react";
+import Empty from "@/components/empty";
 
 export const categoryStyles = [
     'bg-emerald-50 text-emerald-700',
@@ -71,45 +72,38 @@ function Categories() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {
-                                categoryData?.isFetching ?
-                                    <TableRow>
+                            {categories?.length ? categories?.map((category) => {
+                                return (
+                                    <TableRow key={category?.id}>
                                         <TableCell>
-                                            <Loader />
+                                            <div className="font-medium capitalize text-slate-900">
+                                                {category?.slug}
+                                            </div>
                                         </TableCell>
-                                    </TableRow>
-                                    : categories?.length ? categories?.map((category) => {
-                                        return (
-                                            <TableRow key={category?.id}>
-                                                <TableCell>
-                                                    <div className="font-medium capitalize text-slate-900">
-                                                        {category?.slug}
-                                                    </div>
-                                                </TableCell>
 
-                                                <TableCell>
-                                                    <div className="flex gap-1.5">
-                                                        {category?.translations?.map((tr, index) => (
-                                                            <span key={tr?.language_code} className={cn(`inline-flex h-8 min-w-10 items-center justify-center rounded-full px-3 text-xs font-semibold`,
-                                                                languageStyles[index % languageStyles.length]
-                                                            )}>
-                                                                {tr?.language_code?.toUpperCase()}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className='flex items-center gap-3'>
-                                                    <Tooltip>
-                                                        <TooltipTrigger className={"cursor-pointer"} delay={100}>
-                                                            <Link href={routes.categoryDetails(category?.id)}>
-                                                                <Eye size={20} />
-                                                            </Link>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p className='text-xs'>View Detail</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                    {/* <Tooltip>
+                                        <TableCell>
+                                            <div className="flex gap-1.5">
+                                                {category?.translations?.map((tr, index) => (
+                                                    <span key={tr?.language_code} className={cn(`inline-flex h-8 min-w-10 items-center justify-center rounded-full px-3 text-xs font-semibold`,
+                                                        languageStyles[index % languageStyles.length]
+                                                    )}>
+                                                        {tr?.language_code?.toUpperCase()}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className='flex items-center gap-3'>
+                                            <Tooltip>
+                                                <TooltipTrigger className={"cursor-pointer"} delay={100}>
+                                                    <Link href={routes.categoryDetails(category?.id)}>
+                                                        <Eye size={20} />
+                                                    </Link>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p className='text-xs'>View Detail</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            {/* <Tooltip>
                                                         <TooltipTrigger className={"cursor-pointer"} delay={100}>
                                                             <Dialog
                                                                 open={isEditOpen && editingCategoryId === category?.id}
@@ -132,18 +126,15 @@ function Categories() {
                                                             <p className='text-xs'>Edit</p>
                                                         </TooltipContent>
                                                     </Tooltip> */}
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    })
-                                        : <TableRow className='h-36 w-full flex items-center justify-center'>
-                                            <TableCell className="font-semibold text-slate-600">
-                                                No categories found
-                                            </TableCell>
-                                        </TableRow>
-                            }
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            }) : null}
                         </TableBody>
                     </Table>
+                    {categoryData?.isFetching ? <Loader />
+                        : categories?.length === 0 && <Empty title="No categories found" />}
+
                 </div>
             </div>
         </div>

@@ -21,6 +21,7 @@ import Link from "next/link";
 import { routes } from "@/lib/routes";
 import { cn } from "cn";
 import { formatDate } from "@/lib/date-time";
+import Empty from "@/components/empty";
 
 const breadcrumb = [{ name: "Reject Interaction Translations" }];
 function RejectedMedicineInteractionTranslations() {
@@ -42,68 +43,59 @@ function RejectedMedicineInteractionTranslations() {
                                 <TableHead>Explanation</TableHead>
                                 <TableHead>Recommended Action</TableHead>
                                 <TableHead>Language Code</TableHead>
+                                <TableHead>Rejection Reason</TableHead>
                                 <TableHead>Last Updated</TableHead>
                                 <TableHead>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {
-                                rejectedData?.isFetching ?
-                                    <TableRow>
+                            {rejectedMedicineInteraction?.length ? rejectedMedicineInteraction?.map((rejected) => {
+                                return (
+                                    <TableRow key={rejected?.id}>
                                         <TableCell>
-                                            <Loader />
+                                            <div className="font-medium capitalize text-slate-900">
+                                                {rejected?.explanation?.substring(0, 32) + "..."}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="font-medium capitalize text-slate-900">
+                                                {rejected?.recommended_action?.substring(0, 32) + "..."}
+                                            </div>
+                                        </TableCell>
+
+                                        <TableCell>
+                                            <div className="flex gap-1.5">
+                                                <span key={rejected?.language_code} className={cn(`inline-flex h-8 min-w-10 items-center justify-center rounded-full px-3 text-xs font-semibold`)}>
+                                                    {rejected?.language_code?.toUpperCase()}
+                                                </span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="font-medium capitalize text-slate-900">
+                                                {rejected?.rejection_reason || "--"}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="whitespace-nowrap text-slate-600">{formatDate(rejected?.updated_at)}</TableCell>
+                                        <TableCell className='flex items-center gap-3'>
+                                            <Tooltip>
+                                                <TooltipTrigger className={"cursor-pointer"} delay={100}>
+                                                    <Link href={routes.rejectedInteractionTranslationDetail(rejected?.id)}>
+                                                        <Eye size={20} />
+                                                    </Link>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p className='text-xs'>View Detail</p>
+                                                </TooltipContent>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
-                                    : rejectedMedicineInteraction?.length ? rejectedMedicineInteraction?.map((rejected) => {
-                                        return (
-                                            <TableRow key={rejected?.id}>
-                                                <TableCell>
-                                                    <div className="font-medium capitalize text-slate-900">
-                                                        {rejected?.explanation?.substring(0, 32) + "..."}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="font-medium capitalize text-slate-900">
-                                                        {rejected?.recommended_action?.substring(0, 32) + "..."}
-                                                    </div>
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    <div className="flex gap-1.5">
-                                                        <span key={rejected?.language_code} className={cn(`inline-flex h-8 min-w-10 items-center justify-center rounded-full px-3 text-xs font-semibold`)}>
-                                                            {rejected?.language_code?.toUpperCase()}
-                                                        </span>
-                                                    </div>
-                                                </TableCell>
-                                                {/* <TableCell>
-                                                    <div className="font-medium capitalize text-slate-900">
-                                                        {rejected?.rejection_reason}
-                                                    </div>
-                                                </TableCell> */}
-                                                <TableCell className="whitespace-nowrap text-slate-600">{formatDate(rejected?.updated_at)}</TableCell>
-                                                <TableCell className='flex items-center gap-3'>
-                                                    <Tooltip>
-                                                        <TooltipTrigger className={"cursor-pointer"} delay={100}>
-                                                            <Link href={routes.rejectedInteractionTranslationDetail(rejected?.id)}>
-                                                                <Eye size={20} />
-                                                            </Link>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p className='text-xs'>View Detail</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    })
-                                        : <TableRow className='h-36 w-full flex items-center justify-center'>
-                                            <TableCell className="font-semibold text-slate-600">
-                                                No rejected medicine interaction translation found
-                                            </TableCell>
-                                        </TableRow>
-                            }
+                                )
+                            }) : null}
                         </TableBody>
                     </Table>
+                    {rejectedData?.isFetching ? <Loader />
+                        : rejectedMedicineInteraction?.length === 0 && <Empty title="No rejected interaction translations found" />}
+
                 </div>
             </div>
         </div>

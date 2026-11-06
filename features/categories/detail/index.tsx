@@ -8,13 +8,10 @@ import TitleValueCard from "@/components/title-value-card";
 import { routes } from "@/lib/routes";
 import { useState } from "react";
 import CategoryTranslationForm from "./category-translation";
-import { ROLES } from "@/constants";
-import { useSession } from "next-auth/react";
 
 const breadcrumb = [{ name: "Categories", href: routes.category }, { name: "Category Details" }];
 
 function CategoryDetails({ id }: { id: string }) {
-    const { data: session } = useSession()
     const [addLanguage, setAddLanguage] = useState<AddLanguage[]>([]);
 
     const categoryData = useFetchData(
@@ -61,14 +58,13 @@ function CategoryDetails({ id }: { id: string }) {
                 </div>
 
                 {/* Category Translations */}
-                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
-                    <CategoryTranslationForm
-                        categoryId={id}
-                        languageFetching={languagesData.isFetching}
-                        translations={categories?.translations}
-                        mergedLanguages={mergedLanguages}
-                        setAddLanguage={setAddLanguage}
-                    />}
+                <CategoryTranslationForm
+                    categoryId={id}
+                    languageFetching={languagesData.isFetching}
+                    translations={categories?.translations}
+                    mergedLanguages={mergedLanguages}
+                    setAddLanguage={setAddLanguage}
+                />
 
             </div>
         </div>

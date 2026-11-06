@@ -37,7 +37,7 @@ function DraftMedicineInteractionTranslationDetail({ id }: { id: string }) {
                 <TitleValueCard title="Title" value={draftMedicine?.explanation} />
                 <TitleValueCard title="Language" value={draftMedicine?.language_code?.toUpperCase()} />
                 <TitleValueCard title="Recommended Action" value={draftMedicine?.recommended_action} />
-                {/* {draftMedicine?.rejection_reason && <TitleValueCard title="rejection_reason" value={draftMedicine?.rejection_reason} />} */}
+                {draftMedicine?.rejection_reason && <TitleValueCard title="rejection_reason" value={draftMedicine?.rejection_reason} />}
                 <TitleValueCard title="Review Status" value={draftMedicine?.review_status} />
                 <TitleValueCard title="Updated At" value={formatDate(draftMedicine?.updated_at)} />
 
