@@ -5,6 +5,7 @@ import Loader from "@/components/loader";
 import PageHeader from "@/components/page-header";
 import { routes } from "@/lib/routes";
 import MedicineInteractionTranslationUpdateForm from "./update-interaction-translation";
+import TitleValueCard from "@/components/title-value-card";
 
 const breadcrumb = [{ name: "Rejected Medicine Interaction Translations", href: routes.rejectedInteractionTranslations }, { name: "Details" }];
 
@@ -23,11 +24,11 @@ function RejectedMedicineInteractionTranslationDetail({ id }: { id: string }) {
             <PageHeader breadcrumb={breadcrumb} />
 
             <div className="grid gap-4 border-t border-slate-100 pt-6">
-                {/* <TitleValueCard
+                <TitleValueCard
                     title="Rejection Reason"
                     value={rejectedMedicineInteraction?.rejection_reason}
                     className="border border-red-500 rounded-md p-2"
-                /> */}
+                />
 
                 <MedicineInteractionTranslationUpdateForm translation={rejectedMedicineInteraction} />
 

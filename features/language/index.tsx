@@ -27,6 +27,7 @@ import Loader from "@/components/loader";
 import { LanguageForm } from "../language/create";
 import { useSession } from "next-auth/react";
 import { ROLES } from "@/constants";
+import Empty from "@/components/empty";
 
 export const languageStyles = [
     'bg-purple-50 text-purple-700',
@@ -64,34 +65,33 @@ function Languages() {
                     <Table className='w-full'>
                         <TableHeader className="bg-slate-50/80">
                             <TableRow className="hover:bg-slate-50/80">
+                                <TableHead>Name</TableHead>
                                 <TableHead>Native Name</TableHead>
                                 <TableHead>Code</TableHead>
-                                <TableHead>Actions</TableHead>
+                                {/* <TableHead>Actions</TableHead> */}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {
-                                languageData?.isFetching ?
-                                    <TableRow>
+                            {languages?.length ? languages?.map((language) => {
+                                return (
+                                    <TableRow key={language?.id}>
                                         <TableCell>
-                                            <Loader />
+                                            <div className="font-medium capitalize text-slate-900">
+                                                {language?.name}
+                                            </div>
                                         </TableCell>
-                                    </TableRow>
-                                    : languages?.length ? languages?.map((language) => {
-                                        return (
-                                            <TableRow key={language?.id}>
-                                                <TableCell>
-                                                    <div className="font-medium capitalize text-slate-900">
-                                                        {language?.native_name}
-                                                    </div>
-                                                </TableCell>
+                                        <TableCell>
+                                            <div className="font-medium capitalize text-slate-900">
+                                                {language?.native_name}
+                                            </div>
+                                        </TableCell>
 
-                                                <TableCell>
-                                                    <div className="font-medium uppercase text-slate-900">
-                                                        {language?.code}
-                                                    </div>
-                                                </TableCell>
-                                                {/* <TableCell className='flex items-center gap-3'>
+                                        <TableCell>
+                                            <div className="font-medium uppercase text-slate-900">
+                                                {language?.code}
+                                            </div>
+                                        </TableCell>
+                                        {/* <TableCell className='flex items-center gap-3'>
                                                     <Tooltip>
                                                         <TooltipTrigger className={"cursor-pointer"} delay={100}>
                                                             <Dialog
@@ -116,17 +116,14 @@ function Languages() {
                                                         </TooltipContent>
                                                     </Tooltip>
                                                 </TableCell> */}
-                                            </TableRow>
-                                        )
-                                    })
-                                        : <TableRow className='h-36 w-full flex items-center justify-center'>
-                                            <TableCell className="font-semibold text-slate-600">
-                                                No languages found
-                                            </TableCell>
-                                        </TableRow>
-                            }
+                                    </TableRow>
+                                )
+                            }) : null}
                         </TableBody>
                     </Table>
+                    {languageData?.isFetching ? <Loader />
+                        : languages?.length === 0 && <Empty title="No languages found" />}
+
                 </div>
             </div>
         </div>

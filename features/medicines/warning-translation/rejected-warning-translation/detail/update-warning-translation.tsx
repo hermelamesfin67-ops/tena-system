@@ -21,6 +21,8 @@ function MedicineWarningTranslationUpdateForm({ translation }: Props) {
     const { data: session } = useSession()
     const queryClient = useQueryClient()
     const postMutation = useDynamicMutation({ type: "Json" })
+    const hasPermission = session?.user?.user?.role === ROLES.SUPER_ADMIN
+
 
     const initialTranslations: MedicineWarningTranslation = {
         id: translation?.id,
@@ -38,6 +40,9 @@ function MedicineWarningTranslationUpdateForm({ translation }: Props) {
     }
 
     const handleLanguageTranslation = async (values: MedicineWarningTranslation | null) => {
+        // If the user does not have permission, do not proceed with the action.
+        if (!hasPermission) return null
+
         try {
             await postMutation.mutateAsync({
                 url: `drug-warning-translations/${values?.id}/`,
@@ -102,6 +107,7 @@ function MedicineWarningTranslationUpdateForm({ translation }: Props) {
                                                         id={field}
                                                         name={`${field}`}
                                                         rows={3}
+                                                        disabled={!hasPermission}
                                                         placeholder={`Enter ${label.toLowerCase()}`}
                                                         className="w-full rounded-md border border-slate-200 p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                                                     />
@@ -109,6 +115,7 @@ function MedicineWarningTranslationUpdateForm({ translation }: Props) {
                                                     <Field
                                                         id={field}
                                                         name={`${field}`}
+                                                        disabled={!hasPermission}
                                                         placeholder={`Enter ${label.toLowerCase()}`}
                                                         className="w-full rounded-md border border-slate-200 p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                                                     />
@@ -144,7 +151,7 @@ function MedicineWarningTranslationUpdateForm({ translation }: Props) {
                                         </Field>
                                     </div>
                                 </div>
-                                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                {hasPermission &&
                                     <DialogFooter className="sm:justify-end">
                                         <Button onClick={() => router.back()} variant={"outline"}>Back</Button>
                                         <Button type="submit" disabled={postMutation.isPending}>

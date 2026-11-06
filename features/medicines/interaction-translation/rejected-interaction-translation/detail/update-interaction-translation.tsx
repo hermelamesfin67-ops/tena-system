@@ -18,6 +18,7 @@ function MedicineInteractionTranslationUpdateForm({ translation }: Props) {
     const router = useRouter()
     const { data: session } = useSession()
     const postMutation = useDynamicMutation({ type: "Json" })
+    const hasPermission = session?.user?.user?.role === ROLES.SUPER_ADMIN
 
     const initialTranslations: MedicineInteractionTranslation = {
         id: translation?.id,
@@ -26,7 +27,7 @@ function MedicineInteractionTranslationUpdateForm({ translation }: Props) {
         language_code: translation?.language_code,
         explanation: translation?.explanation,
         recommended_action: translation?.recommended_action,
-        // rejection_reason: translation?.rejection_reason,
+        rejection_reason: translation?.rejection_reason,
         reviewed_by: translation?.reviewed_by,
         reviewed_at: translation?.reviewed_at,
         updated_at: translation?.updated_at,
@@ -34,6 +35,8 @@ function MedicineInteractionTranslationUpdateForm({ translation }: Props) {
     }
 
     const handleLanguageTranslation = async (values: MedicineInteractionTranslation | null) => {
+        // If the user does not have permission, do not proceed with the action.
+        if (!hasPermission) return null
         try {
             await postMutation.mutateAsync({
                 url: `drug-interaction-translations/${values?.id}/`,
@@ -90,6 +93,7 @@ function MedicineInteractionTranslationUpdateForm({ translation }: Props) {
                                                     id={field}
                                                     name={`${field}`}
                                                     rows={3}
+                                                    disabled={!hasPermission}
                                                     placeholder={`Enter ${label.toLowerCase()}`}
                                                     className="w-full rounded-md border border-slate-200 p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                                                 />
@@ -124,7 +128,7 @@ function MedicineInteractionTranslationUpdateForm({ translation }: Props) {
                                         </Field>
                                     </div>
                                 </div>
-                                {session?.user?.user?.role === ROLES.SUPER_ADMIN &&
+                                {hasPermission &&
                                     <DialogFooter className="sm:justify-end">
                                         <Button onClick={() => router.back()} variant={"outline"}>Back</Button>
                                         <Button type="submit" disabled={postMutation.isPending}>
